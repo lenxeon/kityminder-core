@@ -47,8 +47,9 @@ define(function(require, exports, module) {
             'selected-stroke': '#3967b2',
             'selected-stroke-width': 2,
 
-            'marquee-background': 'rgba(255,255,255,.3)',
-            'marquee-stroke': 'white',
+            //选区颜色
+            'marquee-background': 'rgba(255,255,255,.7)',
+            'marquee-stroke': '#cccccc',
 
             'drop-hint-color': 'yellow',
             'drop-hint-width': 4,

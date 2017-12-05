@@ -2513,7 +2513,7 @@ _p[23] = {
                 if (this._options.renderTo) {
                     this.renderTo(this._options.renderTo);
                 }
-                //测试
+                //基准线
                 var rect = new kity.Group();
                 // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
                 // rect.style('stroke:#efefef;stroke-width:1;')
@@ -2523,11 +2523,11 @@ _p[23] = {
                 for (var i = -100; i < 100; i++) {
                     var rowLine = new kity.Line(i * step, -3e3, i * step, 3e3);
                     rowLine.fill("white");
-                    rowLine.stroke("#efefef");
+                    rowLine.stroke("#f3f3f3");
                     rect.appendShape(rowLine);
                     var colLine = new kity.Line(-3e3, i * step, 3e3, i * step);
                     colLine.fill("white");
-                    colLine.stroke("#efefef");
+                    colLine.stroke("#f3f3f3");
                     rect.appendShape(colLine);
                 }
             },
@@ -5337,7 +5337,7 @@ _p[45] = {
                         var link = new kity.HyperLink();
                         var linkshape = new kity.Path();
                         var outline = new kity.Rect(24, 22, -2, -6, 4).fill("rgba(255, 255, 255, 0)");
-                        linkshape.scale(.022, .022);
+                        linkshape.scale(.02, .02);
                         //太大了，缩放一下
                         linkshape.translate(-1, -6);
                         //
@@ -8665,8 +8665,9 @@ _p[67] = {
                 // 'selected-background': 'white',
                 "selected-stroke": "#3967b2",
                 "selected-stroke-width": 2,
-                "marquee-background": "rgba(255,255,255,.3)",
-                "marquee-stroke": "white",
+                //选区颜色
+                "marquee-background": "rgba(255,255,255,.7)",
+                "marquee-stroke": "#cccccc",
                 "drop-hint-color": "yellow",
                 "drop-hint-width": 4,
                 "order-hint-area-color": "rgba(0, 255, 0, .5)",

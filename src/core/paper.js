@@ -33,7 +33,7 @@ define(function (require, exports, module) {
             if (this._options.renderTo) {
                 this.renderTo(this._options.renderTo);
             }
-            //测试
+            //基准线
             var rect = new kity.Group();
             // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
             // rect.style('stroke:#efefef;stroke-width:1;')
@@ -43,14 +43,14 @@ define(function (require, exports, module) {
             for (var i = -100; i < 100; i++) {
                 var rowLine = new kity.Line(i * step, -3000, i * step, 3000);
                 rowLine.fill('white')
-                rowLine.stroke('#efefef');
+                rowLine.stroke('#f3f3f3');
                 rect.appendShape(rowLine);
                 var colLine = new kity.Line(-3000, i * step, 3000, i * step);
                 colLine.fill('white')
-                colLine.stroke('#efefef');
+                colLine.stroke('#f3f3f3');
                 rect.appendShape(colLine);
             }
-            //测试
+            //基准线
         },
 
         _addRenderContainer: function () {

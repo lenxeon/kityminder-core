@@ -68,7 +68,7 @@ define(function (require, exports, module) {
                     var link = new kity.HyperLink();
                     var linkshape = new kity.Path();
                     var outline = new kity.Rect(24, 22, -2, -6, 4).fill('rgba(255, 255, 255, 0)');
-                    linkshape.scale(0.022, 0.022);//太大了，缩放一下
+                    linkshape.scale(0.02, 0.02);//太大了，缩放一下
                     linkshape.translate(-1, -6);//
 
                     linkshape.setPathData(linkShapePath).fill('#666');

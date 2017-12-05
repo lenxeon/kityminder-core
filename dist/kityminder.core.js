@@ -1,6 +1,6 @@
 /*!
  * ====================================================
- * kityminder - v1.4.45 - 2017-08-09
+ * kityminder - v1.4.45 - 2017-12-05
  * https://github.com/fex-team/kityminder-core
  * GitHub: https://github.com/fex-team/kityminder-core.git 
  * Copyright (c) 2017 Baidu FEX; Licensed MIT
@@ -2503,6 +2503,23 @@ _p[23] = {
         kity.extendClass(Minder, {
             _initPaper: function() {
                 this._paper = new kity.Paper();
+                // //测试
+                // var rect = new kity.Group();
+                // // rect.style('stroke:#efefef;stroke-width:1;')
+                // // 添加单个图形
+                // this._paper.addShape(rect);
+                // var step = 20
+                // for (var i = 0; i < 100; i++) {
+                //     var rowLine = new kity.Line(i * step, 0, i * step, 3000);
+                //     rowLine.fill('white')
+                //     rowLine.stroke('#efefef');
+                //     rect.appendShape(rowLine);
+                //     var colLine = new kity.Line(0, i * step, 3000, i * step);
+                //     colLine.fill('white')
+                //     colLine.stroke('#efefef');
+                //     rect.appendShape(colLine);
+                // }
+                // //测试
                 this._paper._minder = this;
                 this._paper.getNode().ondragstart = function(e) {
                     e.preventDefault();
@@ -3665,7 +3682,7 @@ _p[32] = {
         });
         Module.register("Theme", {
             defaultOptions: {
-                defaultTheme: "fresh-blue"
+                defaultTheme: "snow"
             },
             commands: {
                 /**
@@ -3803,6 +3820,9 @@ _p[35] = {
         _p.r(7);
         _p.r(24);
         // 模块依赖
+        _p.r(39);
+        _p.r(40);
+        _p.r(41);
         _p.r(42);
         _p.r(43);
         _p.r(44);
@@ -3822,26 +3842,14 @@ _p[35] = {
         _p.r(58);
         _p.r(59);
         _p.r(60);
-        _p.r(61);
-        _p.r(62);
-        _p.r(63);
-        _p.r(67);
         _p.r(64);
-        _p.r(66);
-        _p.r(65);
-        _p.r(40);
+        _p.r(61);
+        _p.r(63);
+        _p.r(62);
+        _p.r(38);
         _p.r(36);
         _p.r(37);
-        _p.r(38);
-        _p.r(39);
-        _p.r(41);
-        _p.r(74);
-        _p.r(77);
-        _p.r(76);
-        _p.r(75);
-        _p.r(77);
-        _p.r(79);
-        _p.r(78);
+        _p.r(71);
         _p.r(0);
         _p.r(1);
         _p.r(2);
@@ -3849,12 +3857,12 @@ _p[35] = {
         _p.r(4);
         _p.r(5);
         _p.r(6);
-        _p.r(68);
-        _p.r(72);
+        _p.r(65);
         _p.r(69);
-        _p.r(71);
+        _p.r(66);
+        _p.r(68);
+        _p.r(67);
         _p.r(70);
-        _p.r(73);
         module.exports = kityminder;
     }
 };
@@ -4057,123 +4065,8 @@ _p[37] = {
     }
 };
 
-//src/layout/fish-bone-master.js
-/**
- * @fileOverview
- *
- * 鱼骨图主骨架布局
- *
- * @author: techird
- * @copyright: Baidu FEX, 2014
- */
-_p[38] = {
-    value: function(require, exports, module) {
-        var kity = _p.r(17);
-        var Layout = _p.r(18);
-        Layout.register("fish-bone-master", kity.createClass("FishBoneMasterLayout", {
-            base: Layout,
-            doLayout: function(parent, children, round) {
-                var upPart = [], downPart = [];
-                var child = children[0];
-                var pBox = parent.getContentBox();
-                parent.setVertexOut(new kity.Point(pBox.right, pBox.cy));
-                parent.setLayoutVectorOut(new kity.Vector(1, 0));
-                if (!child) return;
-                var cBox = child.getContentBox();
-                var pMarginRight = parent.getStyle("margin-right");
-                var cMarginLeft = child.getStyle("margin-left");
-                var cMarginTop = child.getStyle("margin-top");
-                var cMarginBottom = child.getStyle("margin-bottom");
-                children.forEach(function(child, index) {
-                    child.setLayoutTransform(new kity.Matrix());
-                    var cBox = child.getContentBox();
-                    if (index % 2) {
-                        downPart.push(child);
-                        child.setVertexIn(new kity.Point(cBox.left, cBox.top));
-                        child.setLayoutVectorIn(new kity.Vector(1, 1));
-                    } else {
-                        upPart.push(child);
-                        child.setVertexIn(new kity.Point(cBox.left, cBox.bottom));
-                        child.setLayoutVectorIn(new kity.Vector(1, -1));
-                    }
-                });
-                this.stack(upPart, "x");
-                this.stack(downPart, "x");
-                this.align(upPart, "bottom");
-                this.align(downPart, "top");
-                var xAdjust = pBox.right + pMarginRight + cMarginLeft;
-                var yAdjustUp = pBox.cy - cMarginBottom - parent.getStyle("margin-top");
-                var yAdjustDown = pBox.cy + cMarginTop + parent.getStyle("margin-bottom");
-                this.move(upPart, xAdjust, yAdjustUp);
-                this.move(downPart, xAdjust + cMarginLeft, yAdjustDown);
-            }
-        }));
-    }
-};
-
-//src/layout/fish-bone-slave.js
-/**
- * @fileOverview
- *
- *
- *
- * @author: techird
- * @copyright: Baidu FEX, 2014
- */
-_p[39] = {
-    value: function(require, exports, module) {
-        var kity = _p.r(17);
-        var Layout = _p.r(18);
-        Layout.register("fish-bone-slave", kity.createClass("FishBoneSlaveLayout", {
-            base: Layout,
-            doLayout: function(parent, children, round) {
-                var layout = this;
-                var abs = Math.abs;
-                var GOLD_CUT = 1 - .618;
-                var pBox = parent.getContentBox();
-                var vi = parent.getLayoutVectorIn();
-                parent.setLayoutVectorOut(vi);
-                var goldX = pBox.left + pBox.width * GOLD_CUT;
-                var pout = new kity.Point(goldX, vi.y > 0 ? pBox.bottom : pBox.top);
-                parent.setVertexOut(pout);
-                var child = children[0];
-                if (!child) return;
-                var cBox = child.getContentBox();
-                children.forEach(function(child, index) {
-                    child.setLayoutTransform(new kity.Matrix());
-                    child.setLayoutVectorIn(new kity.Vector(1, 0));
-                    child.setVertexIn(new kity.Point(cBox.left, cBox.cy));
-                });
-                this.stack(children, "y");
-                this.align(children, "left");
-                var xAdjust = 0, yAdjust = 0;
-                xAdjust += pout.x;
-                if (parent.getLayoutVectorOut().y < 0) {
-                    yAdjust -= this.getTreeBox(children).bottom;
-                    yAdjust += parent.getContentBox().top;
-                    yAdjust -= parent.getStyle("margin-top");
-                    yAdjust -= child.getStyle("margin-bottom");
-                } else {
-                    yAdjust += parent.getContentBox().bottom;
-                    yAdjust += parent.getStyle("margin-bottom");
-                    yAdjust += child.getStyle("margin-top");
-                }
-                this.move(children, xAdjust, yAdjust);
-                if (round == 2) {
-                    children.forEach(function(child) {
-                        var m = child.getLayoutTransform();
-                        var cbox = child.getContentBox();
-                        var pin = m.transformPoint(new kity.Point(cbox.left, 0));
-                        layout.move([ child ], abs(pin.y - pout.y), 0);
-                    });
-                }
-            }
-        }));
-    }
-};
-
 //src/layout/mind.js
-_p[40] = {
+_p[38] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var Layout = _p.r(18);
@@ -4228,79 +4121,8 @@ _p[40] = {
     }
 };
 
-//src/layout/tianpan.js
-/**
- * @fileOverview
- *
- * 天盘模板
- *
- * @author: along
- * @copyright: bpd729@163.com, 2015
- */
-_p[41] = {
-    value: function(require, exports, module) {
-        var kity = _p.r(17);
-        var Layout = _p.r(18);
-        var Minder = _p.r(19);
-        Layout.register("tianpan", kity.createClass({
-            base: Layout,
-            doLayout: function(parent, children) {
-                if (children.length == 0) return;
-                var layout = this;
-                var pbox = parent.getContentBox();
-                var x, y, box;
-                var _theta = 5;
-                var _r = Math.max(pbox.width, 50);
-                children.forEach(function(child, index) {
-                    child.setLayoutTransform(new kity.Matrix());
-                    box = layout.getTreeBox(child);
-                    _r = Math.max(Math.max(box.width, box.height), _r);
-                });
-                _r = _r / 1.5 / Math.PI;
-                children.forEach(function(child, index) {
-                    x = _r * (Math.cos(_theta) + Math.sin(_theta) * _theta);
-                    y = _r * (Math.sin(_theta) - Math.cos(_theta) * _theta);
-                    _theta += .9 - index * .02;
-                    child.setLayoutVectorIn(new kity.Vector(1, 0));
-                    child.setVertexIn(new kity.Point(pbox.cx, pbox.cy));
-                    child.setLayoutTransform(new kity.Matrix());
-                    layout.move([ child ], x, y);
-                });
-            },
-            getOrderHint: function(node) {
-                var hint = [];
-                var box = node.getLayoutBox();
-                var offset = 5;
-                hint.push({
-                    type: "up",
-                    node: node,
-                    area: {
-                        x: box.x,
-                        y: box.top - node.getStyle("margin-top") - offset,
-                        width: box.width,
-                        height: node.getStyle("margin-top")
-                    },
-                    path: [ "M", box.x, box.top - offset, "L", box.right, box.top - offset ]
-                });
-                hint.push({
-                    type: "down",
-                    node: node,
-                    area: {
-                        x: box.x,
-                        y: box.bottom + offset,
-                        width: box.width,
-                        height: node.getStyle("margin-bottom")
-                    },
-                    path: [ "M", box.x, box.bottom + offset, "L", box.right, box.bottom + offset ]
-                });
-                return hint;
-            }
-        }));
-    }
-};
-
 //src/module/arrange.js
-_p[42] = {
+_p[39] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var MinderNode = _p.r(21);
@@ -4438,7 +4260,7 @@ _p[42] = {
 };
 
 //src/module/basestyle.js
-_p[43] = {
+_p[40] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -4446,7 +4268,7 @@ _p[43] = {
         var MinderNode = _p.r(21);
         var Command = _p.r(9);
         var Module = _p.r(20);
-        var TextRenderer = _p.r(60);
+        var TextRenderer = _p.r(57);
         Module.register("basestylemodule", function() {
             var km = this;
             function getNodeDataOrStyle(node, name) {
@@ -4553,7 +4375,7 @@ _p[43] = {
 };
 
 //src/module/clipboard.js
-_p[44] = {
+_p[41] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -4702,7 +4524,7 @@ _p[44] = {
 };
 
 //src/module/dragtree.js
-_p[45] = {
+_p[42] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -5043,7 +4865,7 @@ _p[45] = {
 };
 
 //src/module/expand.js
-_p[46] = {
+_p[43] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -5309,7 +5131,7 @@ _p[46] = {
 };
 
 //src/module/font.js
-_p[47] = {
+_p[44] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -5317,7 +5139,7 @@ _p[47] = {
         var MinderNode = _p.r(21);
         var Command = _p.r(9);
         var Module = _p.r(20);
-        var TextRenderer = _p.r(60);
+        var TextRenderer = _p.r(57);
         function getNodeDataOrStyle(node, name) {
             return node.getData(name) || node.getStyle(name);
         }
@@ -5456,7 +5278,7 @@ _p[47] = {
 };
 
 //src/module/hyperlink.js
-_p[48] = {
+_p[45] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -5568,7 +5390,7 @@ _p[48] = {
 };
 
 //src/module/image.js
-_p[49] = {
+_p[46] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -5690,7 +5512,7 @@ _p[49] = {
 };
 
 //src/module/keynav.js
-_p[50] = {
+_p[47] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -5845,7 +5667,7 @@ _p[50] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[51] = {
+_p[48] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var Command = _p.r(9);
@@ -5920,7 +5742,7 @@ _p[51] = {
 };
 
 //src/module/node.js
-_p[52] = {
+_p[49] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -6070,7 +5892,7 @@ _p[52] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[53] = {
+_p[50] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -6168,7 +5990,7 @@ _p[53] = {
 };
 
 //src/module/outline.js
-_p[54] = {
+_p[51] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -6285,7 +6107,7 @@ _p[54] = {
 };
 
 //src/module/priority.js
-_p[55] = {
+_p[52] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -6298,13 +6120,13 @@ _p[55] = {
             var minder = this;
             // Designed by Akikonata
             // [MASK, BACK]
-            var PRIORITY_COLORS = [ null, [ "#FF1200", "#840023" ], // 1 - red
-            [ "#0074FF", "#01467F" ], // 2 - blue
-            [ "#00AF00", "#006300" ], // 3 - green
-            [ "#FF962E", "#B25000" ], // 4 - orange
-            [ "#A464FF", "#4720C4" ], // 5 - purple
-            [ "#A3A3A3", "#515151" ], // 6,7,8,9 - gray
-            [ "#A3A3A3", "#515151" ], [ "#A3A3A3", "#515151" ], [ "#A3A3A3", "#515151" ] ];
+            var PRIORITY_COLORS = [ null, [ "#FF1200", "#FF1200" ], // 1 - red
+            [ "#0074FF", "#0074FF" ], // 2 - blue
+            [ "#00AF00", "#00AF00" ], // 3 - green
+            [ "#FF962E", "#FF962E" ], // 4 - orange
+            [ "#A464FF", "#A464FF" ], // 5 - purple
+            [ "#A3A3A3", "#A3A3A3" ], // 6,7,8,9 - gray
+            [ "#A3A3A3", "#A3A3A3" ], [ "#A3A3A3", "#A3A3A3" ], [ "#A3A3A3", "#A3A3A3" ] ];
             // hue from 1 to 5
             // jscs:disable maximumLineLength
             var BACK_PATH = "M0,13c0,3.866,3.134,7,7,7h6c3.866,0,7-3.134,7-7V7H0V13z";
@@ -6327,8 +6149,8 @@ _p[55] = {
                     // 4 layer
                     white = new kity.Path().setPathData(MASK_PATH).fill("white");
                     back = new kity.Path().setPathData(BACK_PATH).setTranslate(.5, .5);
-                    mask = new kity.Path().setPathData(MASK_PATH).setOpacity(.8).setTranslate(.5, .5);
-                    number = new kity.Text().setX(this.width / 2 - .5).setY(this.height / 2).setTextAnchor("middle").setVerticalAlign("middle").setFontItalic(true).setFontSize(12).fill("white");
+                    mask = new kity.Path().setPathData(MASK_PATH).setOpacity(1).setTranslate(.5, .5);
+                    number = new kity.Text().setX(this.width / 2 + 1).setY(this.height / 2 + 1).setTextAnchor("middle").setVerticalAlign("middle").setFontSize(14).fill("white");
                     this.addShapes([ back, mask, number ]);
                     this.mask = mask;
                     this.back = back;
@@ -6411,7 +6233,7 @@ _p[55] = {
 };
 
 //src/module/progress.js
-_p[56] = {
+_p[53] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -6424,17 +6246,17 @@ _p[56] = {
             var minder = this;
             var PROGRESS_DATA = "progress";
             // Designed by Akikonata
-            var BG_COLOR = "#FFED83";
-            var PIE_COLOR = "#43BC00";
+            var BG_COLOR = "white";
+            var PIE_COLOR = "#6c9f41";
             var SHADOW_PATH = "M10,3c4.418,0,8,3.582,8,8h1c0-5.523-3.477-10-9-10S1,5.477,1,11h1C2,6.582,5.582,3,10,3z";
-            var SHADOW_COLOR = "#8E8E8E";
+            var SHADOW_COLOR = "transparent";
             // jscs:disable maximumLineLength
             var FRAME_PATH = "M10,0C4.477,0,0,4.477,0,10c0,5.523,4.477,10,10,10s10-4.477,10-10C20,4.477,15.523,0,10,0zM10,18c-4.418,0-8-3.582-8-8s3.582-8,8-8s8,3.582,8,8S14.418,18,10,18z";
             var FRAME_GRAD = new kity.LinearGradient().pipe(function(g) {
                 g.setStartPosition(0, 0);
                 g.setEndPosition(0, 1);
-                g.addStop(0, "#fff");
-                g.addStop(1, "#ccc");
+                g.addStop(0, "#6c9f41");
+                g.addStop(1, "#6c9f41");
             });
             var CHECK_PATH = "M15.812,7.896l-6.75,6.75l-4.5-4.5L6.25,8.459l2.812,2.803l5.062-5.053L15.812,7.896z";
             var CHECK_COLOR = "#EEE";
@@ -6460,13 +6282,14 @@ _p[56] = {
                     shadow = new kity.Path().setPathData(SHADOW_PATH).setTranslate(-10, -10).fill(SHADOW_COLOR);
                     frame = new kity.Path().setTranslate(-10, -10).setPathData(FRAME_PATH).fill(FRAME_GRAD);
                     check = new kity.Path().setTranslate(-10, -10).setPathData(CHECK_PATH).fill(CHECK_COLOR);
-                    this.addShapes([ bg, pie, shadow, check, frame ]);
+                    // this.addShapes([bg, pie, shadow, check, frame]);
+                    this.addShapes([ bg, pie, check, frame ]);
                     this.pie = pie;
                     this.check = check;
                 },
                 setValue: function(value) {
-                    this.pie.setAngle(-360 * (value - 1) / 8);
-                    this.check.setVisible(value == 9);
+                    this.pie.setAngle(360 * (value - 0) / 10);
+                    this.check.setVisible(value == 10);
                 }
             });
             /**
@@ -6536,7 +6359,7 @@ _p[56] = {
 };
 
 //src/module/resource.js
-_p[57] = {
+_p[54] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -6596,7 +6419,7 @@ _p[57] = {
                     } else {
                         a += "耀";
                         while (a.length % 32 !== 27) {
-                            a += "\x00";
+                            a += "\0";
                         }
                         a += "";
                     }
@@ -6866,7 +6689,7 @@ _p[57] = {
 };
 
 //src/module/select.js
-_p[58] = {
+_p[55] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -7011,7 +6834,7 @@ _p[58] = {
 };
 
 //src/module/style.js
-_p[59] = {
+_p[56] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -7116,7 +6939,7 @@ _p[59] = {
 };
 
 //src/module/text.js
-_p[60] = {
+_p[57] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -7138,7 +6961,7 @@ _p[60] = {
                 "impact,chicago": -.15,
                 "times new roman": -.1,
                 "arial black,avant garde": -.17,
-                "default": 0
+                default: 0
             },
             ie: {
                 10: {
@@ -7147,7 +6970,7 @@ _p[60] = {
                     "impact,chicago": -.08,
                     "times new roman": .04,
                     "arial black,avant garde": -.17,
-                    "default": -.15
+                    default: -.15
                 },
                 11: {
                     "微软雅黑,Microsoft YaHei": -.17,
@@ -7157,7 +6980,7 @@ _p[60] = {
                     "times new roman": .04,
                     "sans-serif": -.16,
                     "arial black,avant garde": -.17,
-                    "default": -.15
+                    default: -.15
                 }
             },
             edge: {
@@ -7167,7 +6990,7 @@ _p[60] = {
                 "impact,chicago": -.08,
                 "sans-serif": -.16,
                 "arial black,avant garde": -.17,
-                "default": -.15
+                default: -.15
             },
             sg: {
                 "微软雅黑,Microsoft YaHei": -.15,
@@ -7176,7 +6999,7 @@ _p[60] = {
                 "impact,chicago": -.16,
                 "times new roman": -.03,
                 "arial black,avant garde": -.22,
-                "default": -.15
+                default: -.15
             },
             chrome: {
                 Mac: {
@@ -7185,7 +7008,7 @@ _p[60] = {
                     "impact,chicago": -.13,
                     "times new roman": -.1,
                     "arial black,avant garde": -.17,
-                    "default": 0
+                    default: 0
                 },
                 Win: {
                     "微软雅黑,Microsoft YaHei": -.15,
@@ -7194,7 +7017,7 @@ _p[60] = {
                     "comic sans ms": -.2,
                     "impact,chicago": -.12,
                     "times new roman": -.02,
-                    "default": -.15
+                    default: -.15
                 },
                 Lux: {
                     "andale mono": -.05,
@@ -7202,7 +7025,7 @@ _p[60] = {
                     "impact,chicago": -.13,
                     "times new roman": -.1,
                     "arial black,avant garde": -.17,
-                    "default": 0
+                    default: 0
                 }
             },
             firefox: {
@@ -7213,7 +7036,7 @@ _p[60] = {
                     "impact,chicago": -.15,
                     "arial black,avant garde": -.17,
                     "times new roman": -.1,
-                    "default": .05
+                    default: .05
                 },
                 Win: {
                     "微软雅黑,Microsoft YaHei": -.16,
@@ -7224,7 +7047,7 @@ _p[60] = {
                     "times new roman": -.22,
                     "sans-serif": -.22,
                     "arial black,avant garde": -.17,
-                    "default": -.16
+                    default: -.16
                 },
                 Lux: {
                     "宋体,SimSun": -.2,
@@ -7239,7 +7062,7 @@ _p[60] = {
                     "times new roman": -.2,
                     "sans-serif": -.2,
                     "arial black,avant garde": -.2,
-                    "default": -.16
+                    default: -.16
                 }
             }
         };
@@ -7370,7 +7193,7 @@ _p[60] = {
 };
 
 //src/module/view.js
-_p[61] = {
+_p[58] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -7692,7 +7515,7 @@ _p[61] = {
 };
 
 //src/module/zoom.js
-_p[62] = {
+_p[59] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var utils = _p.r(33);
@@ -7874,7 +7697,7 @@ _p[62] = {
 };
 
 //src/protocol/json.js
-_p[63] = {
+_p[60] = {
     value: function(require, exports, module) {
         var data = _p.r(12);
         data.registerProtocol("json", module.exports = {
@@ -7893,13 +7716,13 @@ _p[63] = {
 };
 
 //src/protocol/markdown.js
-_p[64] = {
+_p[61] = {
     value: function(require, exports, module) {
         var data = _p.r(12);
         var LINE_ENDING_SPLITER = /\r\n|\r|\n/;
         var EMPTY_LINE = "";
-        var NOTE_MARK_START = "<!--Note-->";
-        var NOTE_MARK_CLOSE = "<!--/Note-->";
+        var NOTE_MARK_START = "\x3c!--Note--\x3e";
+        var NOTE_MARK_CLOSE = "\x3c!--/Note--\x3e";
         function encode(json) {
             return _build(json, 1).join("\n");
         }
@@ -8024,7 +7847,7 @@ _p[64] = {
 };
 
 //src/protocol/png.js
-_p[65] = {
+_p[62] = {
     value: function(require, exports, module) {
         var kity = _p.r(17);
         var data = _p.r(12);
@@ -8244,7 +8067,7 @@ _p[65] = {
 };
 
 //src/protocol/svg.js
-_p[66] = {
+_p[63] = {
     value: function(require, exports, module) {
         var data = _p.r(12);
         /**
@@ -8516,7 +8339,7 @@ _p[66] = {
 };
 
 //src/protocol/text.js
-_p[67] = {
+_p[64] = {
     value: function(require, exports, module) {
         var data = _p.r(12);
         var Browser = _p.r(17).Browser;
@@ -8528,8 +8351,8 @@ _p[67] = {
         var LINE_ENDING = "\r", LINE_ENDING_SPLITER = /\r\n|\r|\n/, TAB_CHAR = function(Browser) {
             if (Browser.gecko) {
                 return {
-                    REGEXP: new RegExp("^(	|" + String.fromCharCode(160, 160, 32, 160) + ")"),
-                    DELETE: new RegExp("^(	|" + String.fromCharCode(160, 160, 32, 160) + ")+")
+                    REGEXP: new RegExp("^(\t|" + String.fromCharCode(160, 160, 32, 160) + ")"),
+                    DELETE: new RegExp("^(\t|" + String.fromCharCode(160, 160, 32, 160) + ")+")
                 };
             } else if (Browser.ie || Browser.edge) {
                 // ie系列和edge比较特别，\t在div中会被直接转义成SPACE故只好使用SPACE来做处理
@@ -8645,7 +8468,7 @@ _p[67] = {
         function encode(json, level) {
             var local = "";
             level = level || 0;
-            local += repeat("	", level);
+            local += repeat("\t", level);
             local += encodeWrap(json.data.text) + LINE_ENDING;
             if (json.children) {
                 json.children.forEach(function(child) {
@@ -8747,7 +8570,7 @@ _p[67] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[68] = {
+_p[65] = {
     value: function(require, exports, module) {
         var template = _p.r(31);
         template.register("default", {
@@ -8781,7 +8604,7 @@ _p[68] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[69] = {
+_p[66] = {
     value: function(require, exports, module) {
         var template = _p.r(31);
         template.register("filetree", {
@@ -8809,7 +8632,7 @@ _p[69] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[70] = {
+_p[67] = {
     value: function(require, exports, module) {
         var template = _p.r(31);
         template.register("fish-bone", {
@@ -8851,7 +8674,7 @@ _p[70] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[71] = {
+_p[68] = {
     value: function(require, exports, module) {
         var template = _p.r(31);
         template.register("right", {
@@ -8875,7 +8698,7 @@ _p[71] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[72] = {
+_p[69] = {
     value: function(require, exports, module) {
         var template = _p.r(31);
         template.register("structure", {
@@ -8898,7 +8721,7 @@ _p[72] = {
  * @author: along
  * @copyright: bpd729@163.com, 2015
  */
-_p[73] = {
+_p[70] = {
     value: function(require, exports, module) {
         var template = _p.r(31);
         template.register("tianpan", {
@@ -8918,194 +8741,16 @@ _p[73] = {
     }
 };
 
-//src/theme/default.js
-_p[74] = {
-    value: function(require, exports, module) {
-        var theme = _p.r(32);
-        [ "classic", "classic-compact" ].forEach(function(name) {
-            var compact = name == "classic-compact";
-            /* jscs:disable maximumLineLength */
-            theme.register(name, {
-                background: '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
-                "root-color": "#430",
-                "root-background": "#e9df98",
-                "root-stroke": "#e9df98",
-                "root-font-size": 24,
-                "root-padding": compact ? [ 10, 25 ] : [ 15, 25 ],
-                "root-margin": compact ? [ 15, 25 ] : [ 30, 100 ],
-                "root-radius": 30,
-                "root-space": 10,
-                "root-shadow": "rgba(0, 0, 0, .25)",
-                "main-color": "#333",
-                "main-background": "#a4c5c0",
-                "main-stroke": "#a4c5c0",
-                "main-font-size": 16,
-                "main-padding": compact ? [ 5, 15 ] : [ 6, 20 ],
-                "main-margin": compact ? [ 5, 10 ] : 20,
-                "main-radius": 10,
-                "main-space": 5,
-                "main-shadow": "rgba(0, 0, 0, .25)",
-                "sub-color": "white",
-                "sub-background": "transparent",
-                "sub-stroke": "none",
-                "sub-font-size": 12,
-                "sub-padding": [ 5, 10 ],
-                "sub-margin": compact ? [ 5, 10 ] : [ 15, 20 ],
-                "sub-tree-margin": 30,
-                "sub-radius": 5,
-                "sub-space": 5,
-                "connect-color": "white",
-                "connect-width": 2,
-                "main-connect-width": 3,
-                "connect-radius": 5,
-                "selected-background": "rgb(254, 219, 0)",
-                "selected-stroke": "rgb(254, 219, 0)",
-                "selected-color": "black",
-                "marquee-background": "rgba(255,255,255,.3)",
-                "marquee-stroke": "white",
-                "drop-hint-color": "yellow",
-                "sub-drop-hint-width": 2,
-                "main-drop-hint-width": 4,
-                "root-drop-hint-width": 4,
-                "order-hint-area-color": "rgba(0, 255, 0, .5)",
-                "order-hint-path-color": "#0f0",
-                "order-hint-path-width": 1,
-                "text-selection-color": "rgb(27,171,255)",
-                "line-height": 1.5
-            });
-        });
-    }
-};
-
-//src/theme/fish.js
-_p[75] = {
-    value: function(require, exports, module) {
-        var theme = _p.r(32);
-        theme.register("fish", {
-            background: '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
-            "root-color": "#430",
-            "root-background": "#e9df98",
-            "root-stroke": "#e9df98",
-            "root-font-size": 24,
-            "root-padding": [ 35, 35 ],
-            "root-margin": 30,
-            "root-radius": 100,
-            "root-space": 10,
-            "root-shadow": "rgba(0, 0, 0, .25)",
-            "main-color": "#333",
-            "main-background": "#a4c5c0",
-            "main-stroke": "#a4c5c0",
-            "main-font-size": 16,
-            "main-padding": [ 6, 20 ],
-            "main-margin": [ 20, 20 ],
-            "main-radius": 5,
-            "main-space": 5,
-            "main-shadow": "rgba(0, 0, 0, .25)",
-            "sub-color": "black",
-            "sub-background": "white",
-            "sub-stroke": "white",
-            "sub-font-size": 12,
-            "sub-padding": [ 5, 10 ],
-            "sub-margin": [ 10 ],
-            "sub-radius": 5,
-            "sub-space": 5,
-            "connect-color": "white",
-            "connect-width": 3,
-            "main-connect-width": 3,
-            "connect-radius": 5,
-            "selected-background": "rgb(254, 219, 0)",
-            "selected-stroke": "rgb(254, 219, 0)",
-            "marquee-background": "rgba(255,255,255,.3)",
-            "marquee-stroke": "white",
-            "drop-hint-color": "yellow",
-            "drop-hint-width": 4,
-            "order-hint-area-color": "rgba(0, 255, 0, .5)",
-            "order-hint-path-color": "#0f0",
-            "order-hint-path-width": 1,
-            "text-selection-color": "rgb(27,171,255)",
-            "line-height": 1.5
-        });
-    }
-};
-
-//src/theme/fresh.js
-_p[76] = {
-    value: function(require, exports, module) {
-        var kity = _p.r(17);
-        var theme = _p.r(32);
-        function hsl(h, s, l) {
-            return kity.Color.createHSL(h, s, l);
-        }
-        function generate(h, compat) {
-            return {
-                background: "#fbfbfb",
-                "root-color": "white",
-                "root-background": hsl(h, 37, 60),
-                "root-stroke": hsl(h, 37, 60),
-                "root-font-size": 16,
-                "root-padding": compat ? [ 6, 12 ] : [ 12, 24 ],
-                "root-margin": compat ? 10 : [ 30, 100 ],
-                "root-radius": 5,
-                "root-space": 10,
-                "main-color": "black",
-                "main-background": hsl(h, 33, 95),
-                "main-stroke": hsl(h, 37, 60),
-                "main-stroke-width": 1,
-                "main-font-size": 14,
-                "main-padding": [ 6, 20 ],
-                "main-margin": compat ? 8 : 20,
-                "main-radius": 3,
-                "main-space": 5,
-                "sub-color": "black",
-                "sub-background": "transparent",
-                "sub-stroke": "none",
-                "sub-font-size": 12,
-                "sub-padding": compat ? [ 3, 5 ] : [ 5, 10 ],
-                "sub-margin": compat ? [ 4, 8 ] : [ 15, 20 ],
-                "sub-radius": 5,
-                "sub-space": 5,
-                "connect-color": hsl(h, 37, 60),
-                "connect-width": 1,
-                "connect-radius": 5,
-                "selected-stroke": hsl(h, 26, 30),
-                "selected-stroke-width": "3",
-                "blur-selected-stroke": hsl(h, 10, 60),
-                "marquee-background": hsl(h, 100, 80).set("a", .1),
-                "marquee-stroke": hsl(h, 37, 60),
-                "drop-hint-color": hsl(h, 26, 35),
-                "drop-hint-width": 5,
-                "order-hint-area-color": hsl(h, 100, 30).set("a", .5),
-                "order-hint-path-color": hsl(h, 100, 25),
-                "order-hint-path-width": 1,
-                "text-selection-color": hsl(h, 100, 20),
-                "line-height": 1.5
-            };
-        }
-        var plans = {
-            red: 0,
-            soil: 25,
-            green: 122,
-            blue: 204,
-            purple: 246,
-            pink: 334
-        };
-        var name;
-        for (name in plans) {
-            theme.register("fresh-" + name, generate(plans[name]));
-            theme.register("fresh-" + name + "-compat", generate(plans[name], true));
-        }
-    }
-};
-
 //src/theme/snow.js
-_p[77] = {
+_p[71] = {
     value: function(require, exports, module) {
         var theme = _p.r(32);
         [ "snow", "snow-compact" ].forEach(function(name) {
             var compact = name == "snow-compact";
             /* jscs:disable maximumLineLength */
             theme.register(name, {
-                background: '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
+                // 'background': '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
+                background: "#ffffff",
                 "root-color": "#430",
                 "root-background": "#e9df98",
                 "root-stroke": "#e9df98",
@@ -9116,25 +8761,25 @@ _p[77] = {
                 "root-space": 10,
                 "root-shadow": "rgba(0, 0, 0, .25)",
                 "main-color": "#333",
-                "main-background": "#a4c5c0",
-                "main-stroke": "#a4c5c0",
+                "main-background": "white",
+                "main-stroke": "#ccc",
                 "main-font-size": 16,
                 "main-padding": compact ? [ 4, 10 ] : [ 6, 20 ],
                 "main-margin": compact ? [ 5, 10 ] : [ 20, 40 ],
                 "main-radius": 5,
                 "main-space": 5,
-                "main-shadow": "rgba(0, 0, 0, .25)",
+                // 'main-shadow': 'rgba(0, 0, 0, .25)',
                 "sub-color": "black",
-                "sub-background": "white",
-                "sub-stroke": "white",
+                "sub-background": "transparent",
+                "sub-stroke": "transparent",
                 "sub-font-size": 12,
                 "sub-padding": [ 5, 10 ],
                 "sub-margin": compact ? [ 5, 10 ] : [ 10, 20 ],
                 "sub-radius": 5,
                 "sub-space": 5,
-                "connect-color": "white",
-                "connect-width": 2,
-                "main-connect-width": 3,
+                "connect-color": "#ccc",
+                "connect-width": 1,
+                "main-connect-width": 1,
                 "connect-radius": 5,
                 "selected-background": "rgb(254, 219, 0)",
                 "selected-stroke": "rgb(254, 219, 0)",
@@ -9148,98 +8793,6 @@ _p[77] = {
                 "text-selection-color": "rgb(27,171,255)",
                 "line-height": 1.5
             });
-        });
-    }
-};
-
-//src/theme/tianpan.js
-_p[78] = {
-    value: function(require, exports, module) {
-        var theme = _p.r(32);
-        [ "tianpan", "tianpan-compact" ].forEach(function(name) {
-            var compact = name == "tianpan-compact";
-            theme.register(name, {
-                background: '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
-                "root-color": "#430",
-                "root-background": "#e9df98",
-                "root-stroke": "#e9df98",
-                "root-font-size": 25,
-                "root-padding": compact ? 15 : 20,
-                "root-margin": compact ? [ 15, 25 ] : 100,
-                "root-radius": 30,
-                "root-space": 10,
-                "root-shadow": "rgba(0, 0, 0, .25)",
-                "root-shape": "circle",
-                "main-color": "#333",
-                "main-background": "#a4c5c0",
-                "main-stroke": "#a4c5c0",
-                "main-font-size": 15,
-                "main-padding": compact ? 10 : 12,
-                "main-margin": compact ? 10 : 12,
-                "main-radius": 10,
-                "main-space": 5,
-                "main-shadow": "rgba(0, 0, 0, .25)",
-                "main-shape": "circle",
-                "sub-color": "#333",
-                "sub-background": "#99ca6a",
-                "sub-stroke": "#a4c5c0",
-                "sub-font-size": 13,
-                "sub-padding": 5,
-                "sub-margin": compact ? 6 : 10,
-                "sub-tree-margin": 30,
-                "sub-radius": 5,
-                "sub-space": 5,
-                "sub-shadow": "rgba(0, 0, 0, .25)",
-                "sub-shape": "circle",
-                "connect-color": "white",
-                "connect-width": 2,
-                "main-connect-width": 3,
-                "connect-radius": 5,
-                "selected-background": "rgb(254, 219, 0)",
-                "selected-stroke": "rgb(254, 219, 0)",
-                "selected-color": "black",
-                "marquee-background": "rgba(255,255,255,.3)",
-                "marquee-stroke": "white",
-                "drop-hint-color": "yellow",
-                "sub-drop-hint-width": 2,
-                "main-drop-hint-width": 4,
-                "root-drop-hint-width": 4,
-                "order-hint-area-color": "rgba(0, 255, 0, .5)",
-                "order-hint-path-color": "#0f0",
-                "order-hint-path-width": 1,
-                "text-selection-color": "rgb(27,171,255)",
-                "line-height": 1.4
-            });
-        });
-    }
-};
-
-//src/theme/wire.js
-_p[79] = {
-    value: function(require, exports, module) {
-        var theme = _p.r(32);
-        theme.register("wire", {
-            background: "black",
-            color: "#999",
-            stroke: "none",
-            padding: 10,
-            margin: 20,
-            "font-size": 14,
-            "connect-color": "#999",
-            "connect-width": 1,
-            "selected-background": "#999",
-            "selected-color": "black",
-            "marquee-background": "rgba(255,255,255,.3)",
-            "marquee-stroke": "white",
-            "drop-hint-color": "yellow",
-            "sub-drop-hint-width": 2,
-            "main-drop-hint-width": 4,
-            "root-drop-hint-width": 4,
-            "order-hint-area-color": "rgba(0, 255, 0, .5)",
-            "order-hint-path-color": "#0f0",
-            "order-hint-path-width": 1,
-            "text-selection-color": "rgb(27,171,255)",
-            "line-height": 1.5
         });
     }
 };

@@ -27,39 +27,186 @@
     <script type="text/javascript" src="bower_components/kity/dist/kity.min.js"></script>
 </head>
 <body>
-    <script id="minder-view" type="application/kityminder" minder-data-type="json">
-    {
-        "root": {
+<script id="minder-view" type="application/kityminder" minder-data-type="json">
+{
+  "root": {
+    "data": {
+      "text": "百度产品",
+      "imageSize": {
+        "width": 270,
+        "height": 129
+      }
+    },
+    "children": [
+      {
+        "data": {
+          "text": "新闻",
+          "progress": 30
+        }
+      },
+      {
+        "data": {
+          "text": "网页",
+          "priority": 1,
+          "progress": 30
+        },
+        "children": [
+          {
             "data": {
-                "text": "百度产品",
-                "image": "https://ss0.bdstatic.com/5a21bjqh_Q23odCf/static/superplus/img/logo_white.png?v=md5",
-                "imageSize": { "width": 270, "height": 129 }
+              "text": "新闻1"
             },
             "children": [
-                { "data": { "text": "新闻" } },
-                { "data": { "text": "网页", "priority": 1 } },
-                { "data": { "text": "贴吧", "priority": 2 } },
-                { "data": { "text": "知道", "priority": 2 } },
-                { "data": { "text": "音乐", "priority": 3 } },
-                { "data": { "text": "图片", "priority": 3 } },
-                { "data": { "text": "视频", "priority": 3 } },
-                { "data": { "text": "地图", "priority": 3 } },
-                { "data": { "text": "百科", "priority": 3 } },
-                { "data": { "text": "更多", "hyperlink": "http://www.baidu.com/more" } }
+              {
+                "data": {
+                  "text": "新闻0%",
+                  "progress": 0
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻10%",
+                  "progress": 1
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻20%",
+                  "progress": 2
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻30%",
+                  "progress": 3
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻40%",
+                  "progress": 4
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻50%",
+                  "progress": 5
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻60%",
+                  "progress": 6
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻70%",
+                  "progress": 7
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻80%",
+                  "progress": 8
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻90%",
+                  "progress": 9
+                }
+              },
+              {
+                "data": {
+                  "text": "新闻100%",
+                  "progress": 10
+                }
+              }
             ]
+          },
+          {
+            "data": {
+              "text": "新闻2"
+            }
+          },
+          {
+            "data": {
+              "text": "新闻3"
+            }
+          },
+          {
+            "data": {
+              "text": "新闻4"
+            }
+          }
+        ]
+      },
+      {
+        "data": {
+          "text": "贴吧",
+          "priority": 2
         }
-    }
-    </script>
+      },
+      {
+        "data": {
+          "text": "知道",
+          "priority": 2
+        }
+      },
+      {
+        "data": {
+          "text": "音乐",
+          "priority": 3
+        }
+      },
+      {
+        "data": {
+          "text": "图片",
+          "priority": 3
+        }
+      },
+      {
+        "data": {
+          "text": "视频",
+          "priority": 3
+        }
+      },
+      {
+        "data": {
+          "text": "地图",
+          "priority": 3
+        }
+      },
+      {
+        "data": {
+          "text": "百科",
+          "priority": 3
+        }
+      },
+      {
+        "data": {
+          "text": "更多",
+          "hyperlink": "http://www.baidu.com/more"
+        }
+      }
+    ]
+  }
+}
+
+
+</script>
 </body>
 
 <script type="text/javascript" src="dist/kityminder.core.min.js"></script>
 <script type="text/javascript">
     // 创建 km 实例
     /* global kityminder */
-    var km = window.km = new kityminder.Minder();
-    km.setup('#minder-view');
-    km.disable();
+    var km = window.minder = new kityminder.Minder({'Theme': 'snow-compact'});
     km.execCommand('hand');
+    km.execCommand('Theme', 'snow');
+    km.setup('#minder-view');
+    minder.execCommand('Theme', 'snow-compact');
+    //    km.disable();
 </script>
 
 </html>

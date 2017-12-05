@@ -14,10 +14,10 @@ define(function(require, exports, module) {
         var PROGRESS_DATA = 'progress';
 
         // Designed by Akikonata
-        var BG_COLOR = '#FFED83';
-        var PIE_COLOR = '#43BC00';
+        var BG_COLOR = 'white';
+        var PIE_COLOR = '#6c9f41';
         var SHADOW_PATH = 'M10,3c4.418,0,8,3.582,8,8h1c0-5.523-3.477-10-9-10S1,5.477,1,11h1C2,6.582,5.582,3,10,3z';
-        var SHADOW_COLOR = '#8E8E8E';
+        var SHADOW_COLOR = 'transparent';
 
         // jscs:disable maximumLineLength
         var FRAME_PATH = 'M10,0C4.477,0,0,4.477,0,10c0,5.523,4.477,10,10,10s10-4.477,10-10C20,4.477,15.523,0,10,0zM10,18c-4.418,0-8-3.582-8-8s3.582-8,8-8s8,3.582,8,8S14.418,18,10,18z';
@@ -25,8 +25,8 @@ define(function(require, exports, module) {
         var FRAME_GRAD = new kity.LinearGradient().pipe(function(g) {
             g.setStartPosition(0, 0);
             g.setEndPosition(0, 1);
-            g.addStop(0, '#fff');
-            g.addStop(1, '#ccc');
+            g.addStop(0, '#6c9f41');
+            g.addStop(1, '#6c9f41');
         });
         var CHECK_PATH = 'M15.812,7.896l-6.75,6.75l-4.5-4.5L6.25,8.459l2.812,2.803l5.062-5.053L15.812,7.896z';
         var CHECK_COLOR = '#EEE';
@@ -75,14 +75,15 @@ define(function(require, exports, module) {
                     .setPathData(CHECK_PATH)
                     .fill(CHECK_COLOR);
 
-                this.addShapes([bg, pie, shadow, check, frame]);
+                // this.addShapes([bg, pie, shadow, check, frame]);
+                this.addShapes([bg, pie, check, frame]);
                 this.pie = pie;
                 this.check = check;
             },
 
             setValue: function(value) {
-                this.pie.setAngle(-360 * (value - 1) / 8);
-                this.check.setVisible(value == 9);
+                this.pie.setAngle(360 * (value - 0) / 10);
+                this.check.setVisible(value == 10);
             }
         });
 

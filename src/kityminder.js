@@ -73,7 +73,7 @@ define(function(require, exports, module) {
 
     require('./layout/mind');
     require('./layout/btree');
-    require('./layout/filetree');
+    // require('./layout/filetree');
 
     require('./theme/snow');
 
@@ -86,11 +86,7 @@ define(function(require, exports, module) {
     require('./connect/under');
 
     require('./template/default');
-    require('./template/structure');
-    require('./template/filetree');
     require('./template/right');
-    require('./template/fish-bone');
-    require('./template/tianpan');
 
     module.exports = kityminder;
 });

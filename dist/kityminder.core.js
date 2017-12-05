@@ -724,7 +724,7 @@ _p[11] = {
         Module.register("Connect", {
             init: function() {
                 this._connectContainer = new kity.Group().setId(utils.uuid("minder_connect_group"));
-                this.getRenderContainer().prependShape(this._connectContainer);
+                this.getRenderContainer().addShape(this._connectContainer, 1);
             },
             events: {
                 nodeattach: function(e) {
@@ -2503,23 +2503,6 @@ _p[23] = {
         kity.extendClass(Minder, {
             _initPaper: function() {
                 this._paper = new kity.Paper();
-                // //测试
-                // var rect = new kity.Group();
-                // // rect.style('stroke:#efefef;stroke-width:1;')
-                // // 添加单个图形
-                // this._paper.addShape(rect);
-                // var step = 20
-                // for (var i = 0; i < 100; i++) {
-                //     var rowLine = new kity.Line(i * step, 0, i * step, 3000);
-                //     rowLine.fill('white')
-                //     rowLine.stroke('#efefef');
-                //     rect.appendShape(rowLine);
-                //     var colLine = new kity.Line(0, i * step, 3000, i * step);
-                //     colLine.fill('white')
-                //     colLine.stroke('#efefef');
-                //     rect.appendShape(colLine);
-                // }
-                // //测试
                 this._paper._minder = this;
                 this._paper.getNode().ondragstart = function(e) {
                     e.preventDefault();
@@ -2529,6 +2512,23 @@ _p[23] = {
                 this.setRoot(this.createNode());
                 if (this._options.renderTo) {
                     this.renderTo(this._options.renderTo);
+                }
+                //测试
+                var rect = new kity.Group();
+                // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
+                // rect.style('stroke:#efefef;stroke-width:1;')
+                // 添加单个图形
+                this._rc.addShape(rect, 0);
+                var step = 20;
+                for (var i = -100; i < 100; i++) {
+                    var rowLine = new kity.Line(i * step, -3e3, i * step, 3e3);
+                    rowLine.fill("white");
+                    rowLine.stroke("#efefef");
+                    rect.appendShape(rowLine);
+                    var colLine = new kity.Line(-3e3, i * step, 3e3, i * step);
+                    colLine.fill("white");
+                    colLine.stroke("#efefef");
+                    rect.appendShape(colLine);
                 }
             },
             _addRenderContainer: function() {
@@ -3682,7 +3682,7 @@ _p[32] = {
         });
         Module.register("Theme", {
             defaultOptions: {
-                defaultTheme: "snow"
+                defaultTheme: "snow-compact"
             },
             commands: {
                 /**
@@ -3848,8 +3848,8 @@ _p[35] = {
         _p.r(62);
         _p.r(38);
         _p.r(36);
-        _p.r(37);
-        _p.r(71);
+        // _p.r(37);
+        _p.r(67);
         _p.r(0);
         _p.r(1);
         _p.r(2);
@@ -3858,11 +3858,7 @@ _p[35] = {
         _p.r(5);
         _p.r(6);
         _p.r(65);
-        _p.r(69);
         _p.r(66);
-        _p.r(68);
-        _p.r(67);
-        _p.r(70);
         module.exports = kityminder;
     }
 };
@@ -5288,7 +5284,7 @@ _p[45] = {
         var Module = _p.r(20);
         var Renderer = _p.r(27);
         // jscs:disable maximumLineLength
-        var linkShapePath = "M16.614,10.224h-1.278c-1.668,0-3.07-1.07-3.599-2.556h4.877c0.707,0,1.278-0.571,1.278-1.278V3.834 c0-0.707-0.571-1.278-1.278-1.278h-4.877C12.266,1.071,13.668,0,15.336,0h1.278c2.116,0,3.834,1.716,3.834,3.834V6.39 C20.448,8.508,18.73,10.224,16.614,10.224z M5.112,5.112c0-0.707,0.573-1.278,1.278-1.278h7.668c0.707,0,1.278,0.571,1.278,1.278 S14.765,6.39,14.058,6.39H6.39C5.685,6.39,5.112,5.819,5.112,5.112z M2.556,3.834V6.39c0,0.707,0.573,1.278,1.278,1.278h4.877 c-0.528,1.486-1.932,2.556-3.599,2.556H3.834C1.716,10.224,0,8.508,0,6.39V3.834C0,1.716,1.716,0,3.834,0h1.278 c1.667,0,3.071,1.071,3.599,2.556H3.834C3.129,2.556,2.556,3.127,2.556,3.834z";
+        var linkShapePath = "M511.999488 62.400189c-248.307296 0-449.599811 201.292516-449.599811 449.599811s201.292516 449.599811 449.599811 449.599811 449.599811-201.292516 449.599811-449.599811S760.306784 62.400189 511.999488 62.400189zM724.108351 536.267706 536.268218 724.107839c-31.568996 31.568996-73.541947 48.954969-118.188796 48.954969-44.644803 0-86.618776-17.385972-118.187773-48.954969-31.57002-31.57002-48.955992-73.54297-48.955992-118.189819 0-44.645826 17.386996-86.618776 48.955992-118.188796l78.643128-78.643128c44.030819-44.029796 115.673509-44.029796 159.702282 0 44.030819 44.029796 44.030819 115.672486 0 159.702282l-91.664699 91.665723c-10.232039 10.229992-26.819832 10.229992-37.051871 0-10.231015-10.232039-10.231015-26.819832 0-37.050848l91.665723-91.665723c23.600511-23.600511 23.600511-62.001099 0-85.600587-23.600511-23.600511-62.001099-23.600511-85.602633 0l-78.644151 78.643128c-44.73997 44.740994-44.73997 117.535927 0 162.27692 44.73997 44.73997 117.53695 44.73997 162.27692 0l187.840132-187.840132c44.738947-44.740994 44.738947-117.53695 0-162.275897-44.73997-44.740994-117.53695-44.73997-162.27692 0-10.229992 10.231015-26.818809 10.231015-37.050848 0-10.231015-10.232039-10.231015-26.819832 0-37.051871 31.568996-31.568996 73.543993-48.954969 118.187773-48.953945 44.647873 0 86.6198 17.384949 118.190843 48.953945 31.568996 31.571043 48.954969 73.543993 48.954969 118.189819S755.677347 504.69871 724.108351 536.267706z";
         Module.register("hyperlink", {
             commands: {
                 /**
@@ -5341,16 +5337,21 @@ _p[45] = {
                         var link = new kity.HyperLink();
                         var linkshape = new kity.Path();
                         var outline = new kity.Rect(24, 22, -2, -6, 4).fill("rgba(255, 255, 255, 0)");
+                        linkshape.scale(.022, .022);
+                        //太大了，缩放一下
+                        linkshape.translate(-1, -6);
+                        //
                         linkshape.setPathData(linkShapePath).fill("#666");
+                        // linkshape.setAttribute('width', 20);//.setHeight(20)
                         link.addShape(outline);
                         link.addShape(linkshape);
                         link.setTarget("_blank");
                         link.setStyle("cursor", "pointer");
-                        link.on("mouseover", function() {
-                            outline.fill("rgba(255, 255, 200, .8)");
-                        }).on("mouseout", function() {
-                            outline.fill("rgba(255, 255, 255, 0)");
-                        });
+                        // link.on('mouseover', function () {
+                        //     outline.fill('rgba(255, 255, 200, .8)');
+                        // }).on('mouseout', function () {
+                        //     outline.fill('rgba(255, 255, 255, 0)');
+                        // });
                         return link;
                     },
                     shouldRender: function(node) {
@@ -6120,13 +6121,13 @@ _p[52] = {
             var minder = this;
             // Designed by Akikonata
             // [MASK, BACK]
-            var PRIORITY_COLORS = [ null, [ "#FF1200", "#FF1200" ], // 1 - red
-            [ "#0074FF", "#0074FF" ], // 2 - blue
-            [ "#00AF00", "#00AF00" ], // 3 - green
-            [ "#FF962E", "#FF962E" ], // 4 - orange
-            [ "#A464FF", "#A464FF" ], // 5 - purple
-            [ "#A3A3A3", "#A3A3A3" ], // 6,7,8,9 - gray
-            [ "#A3A3A3", "#A3A3A3" ], [ "#A3A3A3", "#A3A3A3" ], [ "#A3A3A3", "#A3A3A3" ] ];
+            var PRIORITY_COLORS = [ null, [ "#3967b2", "#3967b2" ], // 1 - red
+            [ "#3967b2", "#3967b2" ], // 2 - blue
+            [ "#3967b2", "#3967b2" ], // 3 - green
+            [ "#3967b2", "#3967b2" ], // 4 - orange
+            [ "#3967b2", "#3967b2" ], // 5 - purple
+            [ "#3967b2", "#3967b2" ], // 6,7,8,9 - gray
+            [ "#3967b2", "#3967b2" ], [ "#3967b2", "#3967b2" ], [ "#3967b2", "#3967b2" ] ];
             // hue from 1 to 5
             // jscs:disable maximumLineLength
             var BACK_PATH = "M0,13c0,3.866,3.134,7,7,7h6c3.866,0,7-3.134,7-7V7H0V13z";
@@ -6247,7 +6248,7 @@ _p[53] = {
             var PROGRESS_DATA = "progress";
             // Designed by Akikonata
             var BG_COLOR = "white";
-            var PIE_COLOR = "#6c9f41";
+            var PIE_COLOR = "#3967b2";
             var SHADOW_PATH = "M10,3c4.418,0,8,3.582,8,8h1c0-5.523-3.477-10-9-10S1,5.477,1,11h1C2,6.582,5.582,3,10,3z";
             var SHADOW_COLOR = "transparent";
             // jscs:disable maximumLineLength
@@ -6255,8 +6256,8 @@ _p[53] = {
             var FRAME_GRAD = new kity.LinearGradient().pipe(function(g) {
                 g.setStartPosition(0, 0);
                 g.setEndPosition(0, 1);
-                g.addStop(0, "#6c9f41");
-                g.addStop(1, "#6c9f41");
+                g.addStop(0, "#3967b2");
+                g.addStop(1, "#3967b2");
             });
             var CHECK_PATH = "M15.812,7.896l-6.75,6.75l-4.5-4.5L6.25,8.459l2.812,2.803l5.062-5.053L15.812,7.896z";
             var CHECK_COLOR = "#EEE";
@@ -6288,6 +6289,8 @@ _p[53] = {
                     this.check = check;
                 },
                 setValue: function(value) {
+                    value = Math.max(value, 0);
+                    value = Math.min(value, 10);
                     this.pie.setAngle(360 * (value - 0) / 10);
                     this.check.setVisible(value == 10);
                 }
@@ -8595,76 +8598,6 @@ _p[65] = {
     }
 };
 
-//src/template/filetree.js
-/**
- * @fileOverview
- *
- * 文件夹模板
- *
- * @author: techird
- * @copyright: Baidu FEX, 2014
- */
-_p[66] = {
-    value: function(require, exports, module) {
-        var template = _p.r(31);
-        template.register("filetree", {
-            getLayout: function(node) {
-                if (node.getData("layout")) return node.getData("layout");
-                if (node.isRoot()) return "bottom";
-                return "filetree-down";
-            },
-            getConnect: function(node) {
-                if (node.getLevel() == 1) {
-                    return "poly";
-                }
-                return "l";
-            }
-        });
-    }
-};
-
-//src/template/fish-bone.js
-/**
- * @fileOverview
- *
- * 默认模板 - 鱼骨头模板
- *
- * @author: techird
- * @copyright: Baidu FEX, 2014
- */
-_p[67] = {
-    value: function(require, exports, module) {
-        var template = _p.r(31);
-        template.register("fish-bone", {
-            getLayout: function(node) {
-                if (node.getData("layout")) return node.getData("layout");
-                var level = node.getLevel();
-                // 根节点
-                if (level === 0) {
-                    return "fish-bone-master";
-                }
-                // 一级节点
-                if (level === 1) {
-                    return "fish-bone-slave";
-                }
-                return node.getLayoutPointPreview().y > 0 ? "filetree-up" : "filetree-down";
-            },
-            getConnect: function(node) {
-                switch (node.getLevel()) {
-                  case 1:
-                    return "fish-bone-master";
-
-                  case 2:
-                    return "line";
-
-                  default:
-                    return "l";
-                }
-            }
-        });
-    }
-};
-
 //src/template/right.js
 /**
  * @fileOverview
@@ -8674,7 +8607,7 @@ _p[67] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[68] = {
+_p[66] = {
     value: function(require, exports, module) {
         var template = _p.r(31);
         template.register("right", {
@@ -8689,60 +8622,8 @@ _p[68] = {
     }
 };
 
-//src/template/structure.js
-/**
- * @fileOverview
- *
- * 组织结构图模板
- *
- * @author: techird
- * @copyright: Baidu FEX, 2014
- */
-_p[69] = {
-    value: function(require, exports, module) {
-        var template = _p.r(31);
-        template.register("structure", {
-            getLayout: function(node) {
-                return node.getData("layout") || "bottom";
-            },
-            getConnect: function(node) {
-                return "poly";
-            }
-        });
-    }
-};
-
-//src/template/tianpan.js
-/**
- * @fileOverview
- *
- * 天盘模板
- *
- * @author: along
- * @copyright: bpd729@163.com, 2015
- */
-_p[70] = {
-    value: function(require, exports, module) {
-        var template = _p.r(31);
-        template.register("tianpan", {
-            getLayout: function(node) {
-                if (node.getData("layout")) return node.getData("layout");
-                var level = node.getLevel();
-                // 根节点
-                if (level === 0) {
-                    return "tianpan";
-                }
-                return node.parent.getLayout();
-            },
-            getConnect: function(node) {
-                return "arc_tp";
-            }
-        });
-    }
-};
-
 //src/theme/snow.js
-_p[71] = {
+_p[67] = {
     value: function(require, exports, module) {
         var theme = _p.r(32);
         [ "snow", "snow-compact" ].forEach(function(name) {
@@ -8751,21 +8632,21 @@ _p[71] = {
             theme.register(name, {
                 // 'background': '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
                 background: "#ffffff",
-                "root-color": "#430",
-                "root-background": "#e9df98",
-                "root-stroke": "#e9df98",
-                "root-font-size": 24,
-                "root-padding": compact ? [ 5, 10 ] : [ 15, 25 ],
-                "root-margin": compact ? 15 : 30,
-                "root-radius": 5,
-                "root-space": 10,
-                "root-shadow": "rgba(0, 0, 0, .25)",
+                "root-color": "#ffffff",
+                "root-background": "#4f9aef",
+                "root-stroke": "#4f9aef",
+                "root-font-size": 16,
+                "root-padding": compact ? [ 10, 15 ] : [ 10, 15 ],
+                "root-margin": compact ? 50 : 50,
+                "root-radius": 10,
+                "root-space": 30,
+                // 'root-shadow': 'rgba(0, 0, 0, .25)',
                 "main-color": "#333",
                 "main-background": "white",
                 "main-stroke": "#ccc",
-                "main-font-size": 16,
-                "main-padding": compact ? [ 4, 10 ] : [ 6, 20 ],
-                "main-margin": compact ? [ 5, 10 ] : [ 20, 40 ],
+                "main-font-size": 14,
+                "main-padding": compact ? [ 9, 15 ] : [ 10, 20 ],
+                "main-margin": compact ? [ 10, 20 ] : [ 10, 20 ],
                 "main-radius": 5,
                 "main-space": 5,
                 // 'main-shadow': 'rgba(0, 0, 0, .25)',
@@ -8773,16 +8654,17 @@ _p[71] = {
                 "sub-background": "transparent",
                 "sub-stroke": "transparent",
                 "sub-font-size": 12,
-                "sub-padding": [ 5, 10 ],
-                "sub-margin": compact ? [ 5, 10 ] : [ 10, 20 ],
+                "sub-padding": [ 5, 5 ],
+                "sub-margin": compact ? [ 5, 10 ] : [ 5, 10 ],
                 "sub-radius": 5,
                 "sub-space": 5,
-                "connect-color": "#ccc",
+                "connect-color": "#bbb",
                 "connect-width": 1,
                 "main-connect-width": 1,
                 "connect-radius": 5,
-                "selected-background": "rgb(254, 219, 0)",
-                "selected-stroke": "rgb(254, 219, 0)",
+                // 'selected-background': 'white',
+                "selected-stroke": "#3967b2",
+                "selected-stroke-width": 2,
                 "marquee-background": "rgba(255,255,255,.3)",
                 "marquee-stroke": "white",
                 "drop-hint-color": "yellow",

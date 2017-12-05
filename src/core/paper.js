@@ -20,25 +20,6 @@ define(function (require, exports, module) {
         _initPaper: function () {
 
             this._paper = new kity.Paper();
-
-
-            // //测试
-            // var rect = new kity.Group();
-            // // rect.style('stroke:#efefef;stroke-width:1;')
-            // // 添加单个图形
-            // this._paper.addShape(rect);
-            // var step = 20
-            // for (var i = 0; i < 100; i++) {
-            //     var rowLine = new kity.Line(i * step, 0, i * step, 3000);
-            //     rowLine.fill('white')
-            //     rowLine.stroke('#efefef');
-            //     rect.appendShape(rowLine);
-            //     var colLine = new kity.Line(0, i * step, 3000, i * step);
-            //     colLine.fill('white')
-            //     colLine.stroke('#efefef');
-            //     rect.appendShape(colLine);
-            // }
-            // //测试
             this._paper._minder = this;
             this._paper.getNode().ondragstart = function (e) {
                 e.preventDefault();
@@ -52,6 +33,24 @@ define(function (require, exports, module) {
             if (this._options.renderTo) {
                 this.renderTo(this._options.renderTo);
             }
+            //测试
+            var rect = new kity.Group();
+            // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
+            // rect.style('stroke:#efefef;stroke-width:1;')
+            // 添加单个图形
+            this._rc.addShape(rect, 0);
+            var step = 20
+            for (var i = -100; i < 100; i++) {
+                var rowLine = new kity.Line(i * step, -3000, i * step, 3000);
+                rowLine.fill('white')
+                rowLine.stroke('#efefef');
+                rect.appendShape(rowLine);
+                var colLine = new kity.Line(-3000, i * step, 3000, i * step);
+                colLine.fill('white')
+                colLine.stroke('#efefef');
+                rect.appendShape(colLine);
+            }
+            //测试
         },
 
         _addRenderContainer: function () {

@@ -13,15 +13,15 @@ define(function (require, exports, module) {
 
         // Designed by Akikonata
         // [MASK, BACK]
-        var PRIORITY_COLORS = [null, ['#FF1200', '#FF1200'], // 1 - red
-            ['#0074FF', '#0074FF'], // 2 - blue
-            ['#00AF00', '#00AF00'], // 3 - green
-            ['#FF962E', '#FF962E'], // 4 - orange
-            ['#A464FF', '#A464FF'], // 5 - purple
-            ['#A3A3A3', '#A3A3A3'], // 6,7,8,9 - gray
-            ['#A3A3A3', '#A3A3A3'],
-            ['#A3A3A3', '#A3A3A3'],
-            ['#A3A3A3', '#A3A3A3'],
+        var PRIORITY_COLORS = [null, ['#3967b2', '#3967b2'], // 1 - red
+            ['#3967b2', '#3967b2'], // 2 - blue
+            ['#3967b2', '#3967b2'], // 3 - green
+            ['#3967b2', '#3967b2'], // 4 - orange
+            ['#3967b2', '#3967b2'], // 5 - purple
+            ['#3967b2', '#3967b2'], // 6,7,8,9 - gray
+            ['#3967b2', '#3967b2'],
+            ['#3967b2', '#3967b2'],
+            ['#3967b2', '#3967b2'],
         ]; // hue from 1 to 5
 
         // jscs:disable maximumLineLength

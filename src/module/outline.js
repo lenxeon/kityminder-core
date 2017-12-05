@@ -114,7 +114,7 @@ define(function(require, exports, module) {
                 .setPathData('M0,-50L0,50M-50,0L50,0');
 
             var box = this.wireframe = new kity.Rect()
-                .stroke('lightgreen');
+                .stroke('green');
 
             var vectorIn = this.vectorIn = new kity.Path()
                 .stroke('#66ffff');

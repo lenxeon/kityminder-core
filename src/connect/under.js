@@ -37,11 +37,11 @@ define(function (require, exports, module) {
         if (side == 'right') {
             p1 = new kity.Point(pBox.right + offset, startY);
             p2 = new kity.Point(pBox.right + offset, underY);
-            p3 = new kity.Point(box.right + offset, underY);
+            p3 = new kity.Point(box.right, underY);
         } else {
             p1 = new kity.Point(pBox.left - offset, startY);
             p2 = new kity.Point(pBox.left - offset, underY);//辅助节点为开始点的x和结束点的y
-            p3 = new kity.Point(box.left - offset, underY);
+            p3 = new kity.Point(box.left, underY);
         }
 
         //右侧参考数据 M 1051 165 L 1051 104 Q 1051 89 1066 89 L 1124 89

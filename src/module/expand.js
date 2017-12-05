@@ -202,7 +202,7 @@ define(function (require, exports, module) {
                     window.node[node.data.text] = node;
                     console.log(node.data.text, node.getLayoutVectorIn().x)
                 }
-                var offset = node.getContentBox().width + 15
+                var offset = node.getContentBox().width + (node.getType() === 'sub' ? 13 : 15);
                 position.x = node.getLayoutVectorIn().x === 1 ? position.x + offset : position.x - offset
                 if (node.getType() === 'sub') {
                     position.y = position.y + node.getContentBox().height / 2 + 3

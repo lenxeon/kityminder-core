@@ -10,12 +10,12 @@ define(function(require, exports, module) {
 
             background: '#ffffff',
             'root-color': '#ffffff',
-            'root-background': '#4f9aef',
-            'root-stroke': '#4f9aef',
+            'root-background': '#3967b2',
+            'root-stroke': '#3967b2',
             'root-font-size': 16,
             'root-padding': compact ? [10, 15] : [10, 15],
             'root-margin': compact ? 50 : 50,
-            'root-radius': 10,
+            'root-radius': 5,
             'root-space': 30,
             // 'root-shadow': 'rgba(0, 0, 0, .25)',
 
@@ -33,10 +33,10 @@ define(function(require, exports, module) {
             'sub-background': 'transparent',
             'sub-stroke': 'transparent',
             'sub-font-size': 12,
-            'sub-padding': [5, 5],
+            'sub-padding': [5, 8],
             'sub-margin': compact ? [5, 10] : [5, 10],
             'sub-radius': 5,
-            'sub-space': 5,
+            'sub-space': 5,//距离左侧的位置
 
             'connect-color': '#bbb',
             'connect-width': 1,
@@ -51,12 +51,14 @@ define(function(require, exports, module) {
             'marquee-background': 'rgba(255,255,255,.7)',
             'marquee-stroke': '#cccccc',
 
-            'drop-hint-color': 'yellow',
-            'drop-hint-width': 4,
+            //拖放
+            'drop-hint-color': '#3967b2',
+            'drop-hint-width': 2,
 
-            'order-hint-area-color': 'rgba(0, 255, 0, .5)',
-            'order-hint-path-color': '#0f0',
-            'order-hint-path-width': 1,
+            //交换顺序
+            'order-hint-area-color': 'rgba(0, 0, 0, .1)',
+            'order-hint-path-color': '#bbb',
+            'order-hint-path-width': 2,
 
             'text-selection-color': 'rgb(27,171,255)',
             'line-height':1.5

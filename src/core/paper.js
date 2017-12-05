@@ -43,11 +43,11 @@ define(function (require, exports, module) {
             for (var i = -100; i < 100; i++) {
                 var rowLine = new kity.Line(i * step, -3000, i * step, 3000);
                 rowLine.fill('white')
-                rowLine.stroke('#f3f3f3');
+                rowLine.stroke('#eeeeee');
                 rect.appendShape(rowLine);
                 var colLine = new kity.Line(-3000, i * step, 3000, i * step);
                 colLine.fill('white')
-                colLine.stroke('#f3f3f3');
+                colLine.stroke('#eeeeee');
                 rect.appendShape(colLine);
             }
             //基准线

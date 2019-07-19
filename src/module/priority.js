@@ -13,10 +13,10 @@ define(function (require, exports, module) {
 
         // Designed by Akikonata
         // [MASK, BACK]
-        var PRIORITY_COLORS = [null, ['#3967b2', '#3967b2'], // 1 - red
-            ['#3967b2', '#3967b2'], // 2 - blue
-            ['#3967b2', '#3967b2'], // 3 - green
-            ['#3967b2', '#3967b2'], // 4 - orange
+        var PRIORITY_COLORS = [null, ['#ff021b', '#666666'], // 1 - red
+            ['#ffa829', '#666666'], // 2 - blue
+            ['#15d61e', '#666666'], // 3 - green
+            ['#17dcbb', '#666666'], // 4 - orange
             ['#3967b2', '#3967b2'], // 5 - purple
             ['#3967b2', '#3967b2'], // 6,7,8,9 - gray
             ['#3967b2', '#3967b2'],

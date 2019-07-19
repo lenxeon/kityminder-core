@@ -53,7 +53,7 @@ define(function (require, exports, module) {
             y: p3.y == p1.y ? Q01.y : p3.y < p1.y ? p3.y : p3.y
         };
         if (p3.y == p1.y) {
-            console.log(Q01, Q02)
+            // console.log(Q01, Q02)
         }
 
         pathData.push('M', p1);

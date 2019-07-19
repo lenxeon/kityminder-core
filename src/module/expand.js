@@ -200,7 +200,7 @@ define(function (require, exports, module) {
                 if (node.data.text == '网页' || node.data.text == '图片') {
                     window.node = window.node || [];
                     window.node[node.data.text] = node;
-                    console.log(node.data.text, node.getLayoutVectorIn().x)
+                    // console.log(node.data.text, node.getLayoutVectorIn().x)
                 }
                 var offset = node.getContentBox().width + (node.getType() === 'sub' ? 13 : 15);
                 position.x = node.getLayoutVectorIn().x === 1 ? position.x + offset : position.x - offset

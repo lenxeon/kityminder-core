@@ -1,9 +1,9 @@
 /*!
  * ====================================================
- * kityminder - v1.4.45 - 2017-12-06
+ * kityminder - v1.4.45 - 2019-02-20
  * https://github.com/fex-team/kityminder-core
  * GitHub: https://github.com/fex-team/kityminder-core.git 
- * Copyright (c) 2017 Baidu FEX; Licensed MIT
+ * Copyright (c) 2019 Baidu FEX; Licensed MIT
  * ====================================================
  */
 
@@ -396,9 +396,7 @@ _p[7] = {
                 x: p3.y == p1.y ? Q01.x : p3.x > p1.x ? p1.x + rect.x : p1.x - rect.x,
                 y: p3.y == p1.y ? Q01.y : p3.y < p1.y ? p3.y : p3.y
             };
-            if (p3.y == p1.y) {
-                console.log(Q01, Q02);
-            }
+            if (p3.y == p1.y) {}
             pathData.push("M", p1);
             pathData.push("L", new kity.Point(L01.x, L01.y));
             pathData.push("Q", new kity.Point(Q01.x, Q01.y), new kity.Point(Q02.x, Q02.y));
@@ -1346,6 +1344,7 @@ _p[14] = {
                 }
             },
             fire: function(type, params) {
+                // console.log('fire.event', type, params);
                 var e = new MinderEvent(type, params);
                 this._fire(e);
                 return this;
@@ -3528,7 +3527,7 @@ _p[31] = {
                     });
                     if (sf) {
                         /* global console: true */
-                        console.log(window.event.type, this._rollbackStatus, "->", this._status);
+                        // console.log(window.event.type, this._rollbackStatus, '->', this._status);
                         if (tf) {
                             console.trace();
                         }
@@ -5111,7 +5110,6 @@ _p[44] = {
                     if (node.data.text == "网页" || node.data.text == "图片") {
                         window.node = window.node || [];
                         window.node[node.data.text] = node;
-                        console.log(node.data.text, node.getLayoutVectorIn().x);
                     }
                     var offset = node.getContentBox().width + (node.getType() === "sub" ? 13 : 15);
                     position.x = node.getLayoutVectorIn().x === 1 ? position.x + offset : position.x - offset;
@@ -5986,7 +5984,7 @@ _p[51] = {
         var Module = _p.r(21);
         var Renderer = _p.r(28);
         Module.register("NoteModule", function() {
-            var NOTE_PATH = "M9,9H3V8h6L9,9L9,9z M9,7H3V6h6V7z M9,5H3V4h6V5z M8.5,11H2V2h8v7.5 M9,12l2-2V1H1v11";
+            var NOTE_PATH = "M783.83 103.165h-543.284c-38.502 0-69.716 31.212-69.716 69.716v679.17c0 38.502 31.213 69.716 69.716 69.716h543.284c38.502 0 69.716-31.213 69.716-69.716v-679.17c0-38.502-31.213-69.716-69.716-69.716zM307.268 307.819h204.131v65.488h-204.131v-65.488zM716.802 781.538h-409.534v-65.488h409.534v65.488zM716.802 577.423h-409.534v-65.488h409.534v65.488z";
             /**
          * @command Note
          * @description 设置节点的备注信息
@@ -6018,7 +6016,7 @@ _p[51] = {
                     this.width = 16;
                     this.height = 17;
                     this.rect = new kity.Rect(16, 17, .5, -8.5, 2).fill("transparent");
-                    this.path = new kity.Path().setPathData(NOTE_PATH).setTranslate(2.5, -6.5);
+                    this.path = new kity.Path().setAttr("name", "NoteIcon").setPathData(NOTE_PATH).fill("#666").setTranslate(-1.5, -11).setScale(.021);
                     this.addShapes([ this.rect, this.path ]);
                     this.on("mouseover", function() {
                         this.rect.fill("rgba(255, 255, 200, .8)");
@@ -6034,20 +6032,31 @@ _p[51] = {
                     var icon = new NoteIcon();
                     icon.on("mousedown", function(e) {
                         e.preventDefault();
-                        node.getMinder().fire("editnoterequest");
+                        e.stopPropagation();
+                        node.getMinder().fire("editnoterequest", {
+                            event: e
+                        });
                     });
-                    icon.on("mouseover", function() {
+                    icon.on("mouseover", _.debounce(function(e) {
+                        console.log("note.mouseover");
+                        e.preventDefault();
+                        e.stopPropagation();
                         node.getMinder().fire("shownoterequest", {
                             node: node,
-                            icon: icon
+                            icon: icon,
+                            event: e
                         });
-                    });
-                    icon.on("mouseout", function() {
+                    }), 500);
+                    icon.on("mouseout", _.debounce(function(e) {
+                        console.log("note.mouseover");
+                        e.preventDefault();
+                        e.stopPropagation();
                         node.getMinder().fire("hidenoterequest", {
                             node: node,
-                            icon: icon
+                            icon: icon,
+                            event: e
                         });
-                    });
+                    }, 500));
                     return icon;
                 },
                 shouldRender: function(node) {
@@ -6056,7 +6065,7 @@ _p[51] = {
                 update: function(icon, node, box) {
                     var x = box.right + node.getStyle("space-left");
                     var y = box.cy;
-                    icon.path.fill(node.getStyle("color"));
+                    // icon.path.fill(node.getStyle('color'));
                     icon.setTranslate(x, y);
                     return new kity.Box(x, Math.round(y - icon.height / 2), icon.width, icon.height);
                 }
@@ -6204,10 +6213,10 @@ _p[53] = {
             var minder = this;
             // Designed by Akikonata
             // [MASK, BACK]
-            var PRIORITY_COLORS = [ null, [ "#3967b2", "#3967b2" ], // 1 - red
-            [ "#3967b2", "#3967b2" ], // 2 - blue
-            [ "#3967b2", "#3967b2" ], // 3 - green
-            [ "#3967b2", "#3967b2" ], // 4 - orange
+            var PRIORITY_COLORS = [ null, [ "#ff021b", "#666666" ], // 1 - red
+            [ "#ffa829", "#666666" ], // 2 - blue
+            [ "#15d61e", "#666666" ], // 3 - green
+            [ "#17dcbb", "#666666" ], // 4 - orange
             [ "#3967b2", "#3967b2" ], // 5 - purple
             [ "#3967b2", "#3967b2" ], // 6,7,8,9 - gray
             [ "#3967b2", "#3967b2" ], [ "#3967b2", "#3967b2" ], [ "#3967b2", "#3967b2" ] ];

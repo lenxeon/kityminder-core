@@ -37,7 +37,7 @@ define(function(require, exports, module) {
                 });
                 if (sf) {
                     /* global console: true */
-                    console.log(window.event.type, this._rollbackStatus, '->', this._status);
+                    // console.log(window.event.type, this._rollbackStatus, '->', this._status);
                     if (tf) {
                         console.trace();
                     }

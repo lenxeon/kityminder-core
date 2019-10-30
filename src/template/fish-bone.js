@@ -1,7 +1,7 @@
 /**
  * @fileOverview
  *
- * 默认模板 - 脑图模板
+ * 默认模板 - 鱼骨头模板
  *
  * @author: techird
  * @copyright: Baidu FEX, 2014
@@ -9,7 +9,7 @@
 define(function(require, exports, module) {
     var template = require('../core/template');
 
-    template.register('default', {
+    template.register('fish-bone', {
 
         getLayout: function(node) {
 
@@ -19,20 +19,23 @@ define(function(require, exports, module) {
 
             // 根节点
             if (level === 0) {
-                return 'mind';
+                return 'fish-bone-master';
             }
 
             // 一级节点
             if (level === 1) {
-                return node.getLayoutPointPreview().x > 0 ? 'right': 'left';
+                return 'fish-bone-slave';
             }
 
-            return node.parent.getLayout();
+            return node.getLayoutPointPreview().y > 0 ? 'filetree-up': 'filetree-down';
         },
 
         getConnect: function(node) {
-            if (node.getLevel() == 1) return 'arc';
-            return 'under';
+            switch (node.getLevel()) {
+                case 1: return 'fish-bone-master';
+                case 2: return 'line';
+                default: return 'l';
+            }
         }
     });
 });

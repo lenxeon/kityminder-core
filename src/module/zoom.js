@@ -165,11 +165,6 @@ define(function(require, exports, module) {
 
                     var delta = e.originEvent.wheelDelta;
                     var me = this;
-
-                    if (!kity.Browser.mac) {
-                        delta = -delta;
-                    }
-
                     // 稀释
                     if (Math.abs(delta) > 100) {
                         clearTimeout(this._wheelZoomTimeout);
@@ -180,13 +175,13 @@ define(function(require, exports, module) {
                     this._wheelZoomTimeout = setTimeout(function() {
                         var value;
                         var lastValue = me.getPaper()._zoom || 1;
-                        if (delta < 0) {
-                            me.execCommand('zoom-in');
-                        } else if (delta > 0) {
-                            me.execCommand('zoom-out');
+                        if (delta > 0) {
+                            me.execCommand('zoomin');
+                        } else if (delta < 0) {
+                            me.execCommand('zoomout');
                         }
                     }, 100);
-
+                    
                     e.originEvent.preventDefault();
                 }
             },

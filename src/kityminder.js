@@ -51,6 +51,7 @@ define(function(require, exports, module) {
     require('./module/font');
     require('./module/hyperlink');
     require('./module/image');
+    require('./module/image-viewer');
     require('./module/keynav');
     require('./module/layout');
     require('./module/node');
@@ -73,9 +74,18 @@ define(function(require, exports, module) {
 
     require('./layout/mind');
     require('./layout/btree');
-    // require('./layout/filetree');
+    require('./layout/filetree');
+    require('./layout/fish-bone-master');
+    require('./layout/fish-bone-slave');
+    require('./layout/tianpan');
 
+    require('./theme/default');
     require('./theme/snow');
+    require('./theme/fresh');
+    require('./theme/fish');
+    require('./theme/snow');
+    require('./theme/wire');
+    require('./theme/tianpan');
 
     require('./connect/arc');
     require('./connect/arc_tp');
@@ -86,7 +96,11 @@ define(function(require, exports, module) {
     require('./connect/under');
 
     require('./template/default');
+    require('./template/structure');
+    require('./template/filetree');
     require('./template/right');
+    require('./template/fish-bone');
+    require('./template/tianpan');
 
     module.exports = kityminder;
 });

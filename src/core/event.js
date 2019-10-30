@@ -259,7 +259,6 @@ define(function(require, exports, module) {
         },
 
         fire: function(type, params) {
-            // console.log('fire.event', type, params);
             var e = new MinderEvent(type, params);
             this._fire(e);
             return this;

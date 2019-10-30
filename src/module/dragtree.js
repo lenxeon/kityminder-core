@@ -64,7 +64,7 @@ define(function(require, exports, module) {
                 this.area.fill(hint.node.getStyle('order-hint-area-color') || 'rgba(0, 255, 0, .5)');
                 this.path.setPathData(hint.path);
                 this.path.stroke(
-                    hint.node.getStyle('order-hint-path-color') || '#ccc',
+                    hint.node.getStyle('order-hint-path-color') || '#0f0',
                     hint.node.getStyle('order-hint-path-width') || 1);
             }
         }

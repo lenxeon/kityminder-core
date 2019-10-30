@@ -142,7 +142,7 @@ define(function(require, exports, module) {
 
     Module.register('Theme', {
         defaultOptions: {
-            defaultTheme: 'snow-compact'
+            defaultTheme: 'fresh-blue'
         },
         commands: {
             /**

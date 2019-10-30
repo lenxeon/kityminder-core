@@ -7,20 +7,20 @@
  * @copyright: Baidu FEX, 2014
  */
 
-define(function (require, exports, module) {
+define(function(require, exports, module) {
     var kity = require('../core/kity');
     var connect = require('../core/connect');
 
-    var connectMarker = new kity.Marker().pipe(function () {
+    var connectMarker = new kity.Marker().pipe(function() {
         var r = 7;
         var dot = new kity.Circle(r - 1);
-        // this.addShape(dot);
+        this.addShape(dot);
         this.setRef(r - 1, 0).setViewBox(-r, -r, r + r, r + r).setWidth(r).setHeight(r);
         this.dot = dot;
         this.node.setAttribute('markerUnits', 'userSpaceOnUse');
     });
 
-    connect.register('arc', function (node, parent, connection, width, color) {
+    connect.register('arc', function(node, parent, connection, width, color) {
 
         var box = node.getLayoutBox(),
             pBox = parent.getLayoutBox();
@@ -39,13 +39,11 @@ define(function (require, exports, module) {
 
         vector = kity.Vector.fromPoints(start, end);
         pathData.push('M', start);
-        // pathData.push('A', abs(vector.x), abs(vector.y), 0, 0, (vector.x * vector.y > 0 ? 0 : 1), end);
-        pathData.push('Q', start.x, end.y, end.x, end.y);
+        pathData.push('A', abs(vector.x), abs(vector.y), 0, 0, (vector.x * vector.y > 0 ? 0 : 1), end);
 
-        // connection.setMarker(connectMarker);
-        // connectMarker.dot.fill(color);
+        connection.setMarker(connectMarker);
+        connectMarker.dot.fill(color);
 
         connection.setPathData(pathData);
-        // nextConnection.setAttr('type', 'arc');
     });
 });

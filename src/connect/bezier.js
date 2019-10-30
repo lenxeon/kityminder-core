@@ -38,6 +38,5 @@ define(function(require, exports, module) {
 
         connection.setMarker(null);
         connection.setPathData(pathData);
-        // connection.setAttr('type', 'bezier');
     });
 });

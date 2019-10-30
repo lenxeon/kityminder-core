@@ -107,7 +107,7 @@ define(function(require, exports, module) {
     Module.register('Connect', {
         init: function() {
             this._connectContainer = new kity.Group().setId(utils.uuid('minder_connect_group'));
-            this.getRenderContainer().addShape(this._connectContainer, 1);
+            this.getRenderContainer().prependShape(this._connectContainer);
         },
         events: {
             'nodeattach': function(e) {

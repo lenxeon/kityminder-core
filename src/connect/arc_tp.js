@@ -60,9 +60,7 @@ define(function(require, exports, module) {
         connectMarker.dot.fill(color);
         connection.setPathData(pathData);
 
-        // M249 793L249 807Q249 807,259 807L314 807
-        // M249 793L249 808Q249 823,259 823L314 823
-        // M249 793L249 806Q249 791,259 791L314 791
+
         // 设置下一个的节点的连接线
         if (nextNode && nextNode.getConnection()) {
             var nextConnection = nextNode.getConnection();
@@ -80,10 +78,8 @@ define(function(require, exports, module) {
             connectMarker.dot.fill(color);
 
             nextConnection.setPathData(pathData);
-            // nextConnection.setAttr('type', 'arc_tp');
 
         }
-        // connection.setAttr('type', 'arc_tp');
 
     });
 });

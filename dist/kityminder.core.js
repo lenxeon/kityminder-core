@@ -1,6 +1,6 @@
 /*!
  * ====================================================
- * kityminder - v1.4.45 - 2019-02-20
+ * kityminder - v1.4.45 - 2019-10-31
  * https://github.com/fex-team/kityminder-core
  * GitHub: https://github.com/fex-team/kityminder-core.git 
  * Copyright (c) 2019 Baidu FEX; Licensed MIT
@@ -381,6 +381,9 @@ _p[7] = {
                 p2 = new kity.Point(pBox.left - offset, underY);
                 //辅助节点为开始点的x和结束点的y
                 p3 = new kity.Point(box.left, underY);
+            }
+            if (parent && parent.children && parent.children.length == 1) {
+                rect.y = 0;
             }
             //右侧参考数据 M 1051 165 L 1051 104 Q 1051 89 1066 89 L 1124 89
             //左侧参数数据 M 376 237 L 376 195 Q 376 180 361 180 L 249 180

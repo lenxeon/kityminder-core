@@ -46,5 +46,6 @@ define(function (require, exports, module) {
         // connectMarker.dot.fill(color);
 
         connection.setPathData(pathData);
+        // nextConnection.setAttr('type', 'arc');
     });
 });

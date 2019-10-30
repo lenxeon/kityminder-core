@@ -30,5 +30,6 @@ define(function(require, exports, module) {
         pathData.push('L', pi);
 
         connection.setPathData(pathData);
+        // connection.setAttr('type', 'l');
     });
 });

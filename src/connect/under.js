@@ -34,6 +34,7 @@ define(function (require, exports, module) {
             y: 15
         }
 
+
         if (side == 'right') {
             p1 = new kity.Point(pBox.right + offset, startY);
             p2 = new kity.Point(pBox.right + offset, underY);
@@ -42,6 +43,10 @@ define(function (require, exports, module) {
             p1 = new kity.Point(pBox.left - offset, startY);
             p2 = new kity.Point(pBox.left - offset, underY);//辅助节点为开始点的x和结束点的y
             p3 = new kity.Point(box.left, underY);
+        }
+        if (parent && parent.children && parent.children.length == 1) {
+            rect.y = 0;
+            // p3.y = startY;
         }
 
         //右侧参考数据 M 1051 165 L 1051 104 Q 1051 89 1066 89 L 1124 89
@@ -61,9 +66,9 @@ define(function (require, exports, module) {
         pathData.push('Q', new kity.Point(Q01.x, Q01.y), new kity.Point(Q02.x, Q02.y));
         pathData.push('L', p3);
 
-
         connection.setMarker(null);
 
         connection.setPathData(pathData);
+        // connection.setAttr('type', 'under');
     });
 });

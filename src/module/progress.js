@@ -1,4 +1,4 @@
-define(function(require, exports, module) {
+define(function (require, exports, module) {
     var kity = require('../core/kity');
     var utils = require('../core/utils');
 
@@ -8,25 +8,25 @@ define(function(require, exports, module) {
     var Module = require('../core/module');
     var Renderer = require('../core/render');
 
-    Module.register('ProgressModule', function() {
+    Module.register('ProgressModule', function () {
         var minder = this;
 
         var PROGRESS_DATA = 'progress';
 
         // Designed by Akikonata
-        var BG_COLOR = '#FFED83';
-        var PIE_COLOR = '#43BC00';
+        var BG_COLOR = 'white';
+        var PIE_COLOR = '#3967b2';
         var SHADOW_PATH = 'M10,3c4.418,0,8,3.582,8,8h1c0-5.523-3.477-10-9-10S1,5.477,1,11h1C2,6.582,5.582,3,10,3z';
-        var SHADOW_COLOR = '#8E8E8E';
+        var SHADOW_COLOR = 'transparent';
 
         // jscs:disable maximumLineLength
         var FRAME_PATH = 'M10,0C4.477,0,0,4.477,0,10c0,5.523,4.477,10,10,10s10-4.477,10-10C20,4.477,15.523,0,10,0zM10,18c-4.418,0-8-3.582-8-8s3.582-8,8-8s8,3.582,8,8S14.418,18,10,18z';
 
-        var FRAME_GRAD = new kity.LinearGradient().pipe(function(g) {
+        var FRAME_GRAD = new kity.LinearGradient().pipe(function (g) {
             g.setStartPosition(0, 0);
             g.setEndPosition(0, 1);
-            g.addStop(0, '#fff');
-            g.addStop(1, '#ccc');
+            g.addStop(0, '#3967b2');
+            g.addStop(1, '#3967b2');
         });
         var CHECK_PATH = 'M15.812,7.896l-6.75,6.75l-4.5-4.5L6.25,8.459l2.812,2.803l5.062-5.053L15.812,7.896z';
         var CHECK_COLOR = '#EEE';
@@ -37,7 +37,7 @@ define(function(require, exports, module) {
         var ProgressIcon = kity.createClass('ProgressIcon', {
             base: kity.Group,
 
-            constructor: function(value) {
+            constructor: function (value) {
                 this.callBase();
                 this.setSize(20);
                 this.create();
@@ -46,11 +46,11 @@ define(function(require, exports, module) {
                 this.translate(0.5, 0.5);
             },
 
-            setSize: function(size) {
+            setSize: function (size) {
                 this.width = this.height = size;
             },
 
-            create: function() {
+            create: function () {
 
                 var bg, pie, shadow, frame, check;
 
@@ -75,14 +75,17 @@ define(function(require, exports, module) {
                     .setPathData(CHECK_PATH)
                     .fill(CHECK_COLOR);
 
-                this.addShapes([bg, pie, shadow, check, frame]);
+                // this.addShapes([bg, pie, shadow, check, frame]);
+                this.addShapes([bg, pie, check, frame]);
                 this.pie = pie;
                 this.check = check;
             },
 
-            setValue: function(value) {
-                this.pie.setAngle(-360 * (value - 1) / 8);
-                this.check.setVisible(value == 9);
+            setValue: function (value) {
+                value = Math.max(value, 0);
+                value = Math.min(value, 10);
+                this.pie.setAngle(360 * (value - 0) / 10);
+                this.check.setVisible(value == 10);
             }
         });
 
@@ -102,14 +105,14 @@ define(function(require, exports, module) {
          */
         var ProgressCommand = kity.createClass('ProgressCommand', {
             base: Command,
-            execute: function(km, value) {
+            execute: function (km, value) {
                 var nodes = km.getSelectedNodes();
                 for (var i = 0; i < nodes.length; i++) {
                     nodes[i].setData(PROGRESS_DATA, value || null).render();
                 }
                 km.layout();
             },
-            queryValue: function(km) {
+            queryValue: function (km) {
                 var nodes = km.getSelectedNodes();
                 var val;
                 for (var i = 0; i < nodes.length; i++) {
@@ -119,7 +122,7 @@ define(function(require, exports, module) {
                 return val || null;
             },
 
-            queryState: function(km) {
+            queryState: function (km) {
                 return km.getSelectedNodes().length ? 0 : -1;
             }
         });
@@ -132,15 +135,15 @@ define(function(require, exports, module) {
                 left: kity.createClass('ProgressRenderer', {
                     base: Renderer,
 
-                    create: function(node) {
+                    create: function (node) {
                         return new ProgressIcon();
                     },
 
-                    shouldRender: function(node) {
+                    shouldRender: function (node) {
                         return node.getData(PROGRESS_DATA);
                     },
 
-                    update: function(icon, node, box) {
+                    update: function (icon, node, box) {
                         var data = node.getData(PROGRESS_DATA);
                         var spaceLeft = node.getStyle('space-left');
                         var x, y;

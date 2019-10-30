@@ -33,24 +33,6 @@ define(function (require, exports, module) {
             if (this._options.renderTo) {
                 this.renderTo(this._options.renderTo);
             }
-            //基准线
-            var rect = new kity.Group();
-            // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
-            // rect.style('stroke:#efefef;stroke-width:1;')
-            // 添加单个图形
-            this._rc.addShape(rect, 0);
-            var step = 20
-            for (var i = -100; i < 100; i++) {
-                var rowLine = new kity.Line(i * step, -3000, i * step, 3000);
-                rowLine.fill('white')
-                rowLine.stroke('#eeeeee');
-                rect.appendShape(rowLine);
-                var colLine = new kity.Line(-3000, i * step, 3000, i * step);
-                colLine.fill('white')
-                colLine.stroke('#eeeeee');
-                rect.appendShape(colLine);
-            }
-            //基准线
         },
 
         _addRenderContainer: function () {

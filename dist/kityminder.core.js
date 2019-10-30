@@ -53,7 +53,7 @@ _p[0] = {
         var connectMarker = new kity.Marker().pipe(function() {
             var r = 7;
             var dot = new kity.Circle(r - 1);
-            // this.addShape(dot);
+            this.addShape(dot);
             this.setRef(r - 1, 0).setViewBox(-r, -r, r + r, r + r).setWidth(r).setHeight(r);
             this.dot = dot;
             this.node.setAttribute("markerUnits", "userSpaceOnUse");
@@ -69,10 +69,9 @@ _p[0] = {
             end = side == "left" ? new kity.Point(box.right + 2, box.cy) : new kity.Point(box.left - 2, box.cy);
             vector = kity.Vector.fromPoints(start, end);
             pathData.push("M", start);
-            // pathData.push('A', abs(vector.x), abs(vector.y), 0, 0, (vector.x * vector.y > 0 ? 0 : 1), end);
-            pathData.push("Q", start.x, end.y, end.x, end.y);
-            // connection.setMarker(connectMarker);
-            // connectMarker.dot.fill(color);
+            pathData.push("A", abs(vector.x), abs(vector.y), 0, 0, vector.x * vector.y > 0 ? 0 : 1, end);
+            connection.setMarker(connectMarker);
+            connectMarker.dot.fill(color);
             connection.setPathData(pathData);
         });
     }
@@ -349,60 +348,27 @@ _p[7] = {
         var kity = _p.r(18);
         var connect = _p.r(12);
         connect.register("under", function(node, parent, connection, width, color) {
-            var box = node.getLayoutBox();
-            //结束节点
-            var pBox = parent.getLayoutBox();
-            //开始节点
+            var box = node.getLayoutBox(), pBox = parent.getLayoutBox();
             var start, end, vector;
             var abs = Math.abs;
             var pathData = [];
             var side = box.x > pBox.x ? "right" : "left";
-            var offset = 17;
-            //为了让展开收起更好看
             var radius = node.getStyle("connect-radius");
             var underY = box.bottom + 3;
             var startY = parent.getType() == "sub" ? pBox.bottom + 3 : pBox.cy;
-            var p1;
-            //起点
-            var p2;
-            //辅助点
-            var p3;
-            //终点
-            var rect = {
-                x: 10,
-                y: 15
-            };
+            var p1, p2, p3, mx;
             if (side == "right") {
-                p1 = new kity.Point(pBox.right + offset, startY);
-                p2 = new kity.Point(pBox.right + offset, underY);
+                p1 = new kity.Point(pBox.right, startY);
+                p2 = new kity.Point(box.left - 10, underY);
                 p3 = new kity.Point(box.right, underY);
             } else {
-                p1 = new kity.Point(pBox.left - offset, startY);
-                p2 = new kity.Point(pBox.left - offset, underY);
-                //辅助节点为开始点的x和结束点的y
+                p1 = new kity.Point(pBox.left, startY);
+                p2 = new kity.Point(box.right + 10, underY);
                 p3 = new kity.Point(box.left, underY);
             }
-            if (parent && parent.children && parent.children.length == 1) {
-                rect.y = 0;
-            }
-            //右侧参考数据 M 1051 165 L 1051 104 Q 1051 89 1066 89 L 1124 89
-            //左侧参数数据 M 376 237 L 376 195 Q 376 180 361 180 L 249 180
-            var L01 = {
-                x: p3.x > p1.x ? p1.x : p1.x,
-                y: p3.y < p1.y ? p3.y + rect.y : p3.y - rect.y
-            };
-            var Q01 = {
-                x: p1.x,
-                y: p3.y
-            };
-            var Q02 = {
-                x: p3.y == p1.y ? Q01.x : p3.x > p1.x ? p1.x + rect.x : p1.x - rect.x,
-                y: p3.y == p1.y ? Q01.y : p3.y < p1.y ? p3.y : p3.y
-            };
-            if (p3.y == p1.y) {}
+            mx = (p1.x + p2.x) / 2;
             pathData.push("M", p1);
-            pathData.push("L", new kity.Point(L01.x, L01.y));
-            pathData.push("Q", new kity.Point(Q01.x, Q01.y), new kity.Point(Q02.x, Q02.y));
+            pathData.push("C", mx, p1.y, mx, p2.y, p2);
             pathData.push("L", p3);
             connection.setMarker(null);
             connection.setPathData(pathData);
@@ -798,7 +764,25 @@ _p[12] = {
         Module.register("Connect", {
             init: function() {
                 this._connectContainer = new kity.Group().setId(utils.uuid("minder_connect_group"));
-                this.getRenderContainer().addShape(this._connectContainer, 1);
+                this.getRenderContainer().prependShape(this._connectContainer);
+                //基准线
+                var rect = new kity.Group().setId(utils.uuid("lines"));
+                // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
+                // rect.style('stroke:#efefef;stroke-width:1;')
+                // 添加单个图形
+                console.log("添加基准线");
+                var step = 20;
+                for (var i = -300; i < 300; i++) {
+                    var rowLine = new kity.Line(i * step, -3e3, i * step, 3e3);
+                    rowLine.fill("white");
+                    rowLine.stroke("#eeeeee");
+                    rect.appendShape(rowLine);
+                    var colLine = new kity.Line(-3e3, i * step, 3e3, i * step);
+                    colLine.fill("white");
+                    colLine.stroke("#eeeeee");
+                    rect.appendShape(colLine);
+                }
+                this.getRenderContainer().prependShape(rect);
             },
             events: {
                 nodeattach: function(e) {
@@ -1347,7 +1331,6 @@ _p[14] = {
                 }
             },
             fire: function(type, params) {
-                // console.log('fire.event', type, params);
                 var e = new MinderEvent(type, params);
                 this._fire(e);
                 return this;
@@ -2588,23 +2571,6 @@ _p[24] = {
                 if (this._options.renderTo) {
                     this.renderTo(this._options.renderTo);
                 }
-                //基准线
-                var rect = new kity.Group();
-                // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
-                // rect.style('stroke:#efefef;stroke-width:1;')
-                // 添加单个图形
-                this._rc.addShape(rect, 0);
-                var step = 20;
-                for (var i = -100; i < 100; i++) {
-                    var rowLine = new kity.Line(i * step, -3e3, i * step, 3e3);
-                    rowLine.fill("white");
-                    rowLine.stroke("#eeeeee");
-                    rect.appendShape(rowLine);
-                    var colLine = new kity.Line(-3e3, i * step, 3e3, i * step);
-                    colLine.fill("white");
-                    colLine.stroke("#eeeeee");
-                    rect.appendShape(colLine);
-                }
             },
             _addRenderContainer: function() {
                 this._rc = new kity.Group().setId(utils.uuid("minder"));
@@ -3530,7 +3496,7 @@ _p[31] = {
                     });
                     if (sf) {
                         /* global console: true */
-                        // console.log(window.event.type, this._rollbackStatus, '->', this._status);
+                        console.log(window.event.type, this._rollbackStatus, "->", this._status);
                         if (tf) {
                             console.trace();
                         }
@@ -3757,7 +3723,7 @@ _p[33] = {
         });
         Module.register("Theme", {
             defaultOptions: {
-                defaultTheme: "snow-compact"
+                defaultTheme: "fresh-blue"
             },
             commands: {
                 /**
@@ -3895,9 +3861,6 @@ _p[36] = {
         _p.r(8);
         _p.r(25);
         // 模块依赖
-        _p.r(40);
-        _p.r(41);
-        _p.r(42);
         _p.r(43);
         _p.r(44);
         _p.r(45);
@@ -3905,8 +3868,8 @@ _p[36] = {
         _p.r(47);
         _p.r(48);
         _p.r(49);
-        _p.r(50);
         _p.r(51);
+        _p.r(50);
         _p.r(52);
         _p.r(53);
         _p.r(54);
@@ -3917,14 +3880,27 @@ _p[36] = {
         _p.r(59);
         _p.r(60);
         _p.r(61);
-        _p.r(65);
         _p.r(62);
-        _p.r(64);
         _p.r(63);
-        _p.r(39);
-        _p.r(37);
-        // _p.r(38);
+        _p.r(64);
+        _p.r(65);
+        _p.r(69);
+        _p.r(66);
         _p.r(68);
+        _p.r(67);
+        _p.r(41);
+        _p.r(37);
+        _p.r(38);
+        _p.r(39);
+        _p.r(40);
+        _p.r(42);
+        _p.r(76);
+        _p.r(79);
+        _p.r(78);
+        _p.r(77);
+        _p.r(79);
+        _p.r(81);
+        _p.r(80);
         _p.r(0);
         _p.r(1);
         _p.r(2);
@@ -3932,8 +3908,12 @@ _p[36] = {
         _p.r(5);
         _p.r(6);
         _p.r(7);
-        _p.r(66);
-        _p.r(67);
+        _p.r(70);
+        _p.r(74);
+        _p.r(71);
+        _p.r(73);
+        _p.r(72);
+        _p.r(75);
         module.exports = kityminder;
     }
 };
@@ -4136,8 +4116,123 @@ _p[38] = {
     }
 };
 
-//src/layout/mind.js
+//src/layout/fish-bone-master.js
+/**
+ * @fileOverview
+ *
+ * 鱼骨图主骨架布局
+ *
+ * @author: techird
+ * @copyright: Baidu FEX, 2014
+ */
 _p[39] = {
+    value: function(require, exports, module) {
+        var kity = _p.r(18);
+        var Layout = _p.r(19);
+        Layout.register("fish-bone-master", kity.createClass("FishBoneMasterLayout", {
+            base: Layout,
+            doLayout: function(parent, children, round) {
+                var upPart = [], downPart = [];
+                var child = children[0];
+                var pBox = parent.getContentBox();
+                parent.setVertexOut(new kity.Point(pBox.right, pBox.cy));
+                parent.setLayoutVectorOut(new kity.Vector(1, 0));
+                if (!child) return;
+                var cBox = child.getContentBox();
+                var pMarginRight = parent.getStyle("margin-right");
+                var cMarginLeft = child.getStyle("margin-left");
+                var cMarginTop = child.getStyle("margin-top");
+                var cMarginBottom = child.getStyle("margin-bottom");
+                children.forEach(function(child, index) {
+                    child.setLayoutTransform(new kity.Matrix());
+                    var cBox = child.getContentBox();
+                    if (index % 2) {
+                        downPart.push(child);
+                        child.setVertexIn(new kity.Point(cBox.left, cBox.top));
+                        child.setLayoutVectorIn(new kity.Vector(1, 1));
+                    } else {
+                        upPart.push(child);
+                        child.setVertexIn(new kity.Point(cBox.left, cBox.bottom));
+                        child.setLayoutVectorIn(new kity.Vector(1, -1));
+                    }
+                });
+                this.stack(upPart, "x");
+                this.stack(downPart, "x");
+                this.align(upPart, "bottom");
+                this.align(downPart, "top");
+                var xAdjust = pBox.right + pMarginRight + cMarginLeft;
+                var yAdjustUp = pBox.cy - cMarginBottom - parent.getStyle("margin-top");
+                var yAdjustDown = pBox.cy + cMarginTop + parent.getStyle("margin-bottom");
+                this.move(upPart, xAdjust, yAdjustUp);
+                this.move(downPart, xAdjust + cMarginLeft, yAdjustDown);
+            }
+        }));
+    }
+};
+
+//src/layout/fish-bone-slave.js
+/**
+ * @fileOverview
+ *
+ *
+ *
+ * @author: techird
+ * @copyright: Baidu FEX, 2014
+ */
+_p[40] = {
+    value: function(require, exports, module) {
+        var kity = _p.r(18);
+        var Layout = _p.r(19);
+        Layout.register("fish-bone-slave", kity.createClass("FishBoneSlaveLayout", {
+            base: Layout,
+            doLayout: function(parent, children, round) {
+                var layout = this;
+                var abs = Math.abs;
+                var GOLD_CUT = 1 - .618;
+                var pBox = parent.getContentBox();
+                var vi = parent.getLayoutVectorIn();
+                parent.setLayoutVectorOut(vi);
+                var goldX = pBox.left + pBox.width * GOLD_CUT;
+                var pout = new kity.Point(goldX, vi.y > 0 ? pBox.bottom : pBox.top);
+                parent.setVertexOut(pout);
+                var child = children[0];
+                if (!child) return;
+                var cBox = child.getContentBox();
+                children.forEach(function(child, index) {
+                    child.setLayoutTransform(new kity.Matrix());
+                    child.setLayoutVectorIn(new kity.Vector(1, 0));
+                    child.setVertexIn(new kity.Point(cBox.left, cBox.cy));
+                });
+                this.stack(children, "y");
+                this.align(children, "left");
+                var xAdjust = 0, yAdjust = 0;
+                xAdjust += pout.x;
+                if (parent.getLayoutVectorOut().y < 0) {
+                    yAdjust -= this.getTreeBox(children).bottom;
+                    yAdjust += parent.getContentBox().top;
+                    yAdjust -= parent.getStyle("margin-top");
+                    yAdjust -= child.getStyle("margin-bottom");
+                } else {
+                    yAdjust += parent.getContentBox().bottom;
+                    yAdjust += parent.getStyle("margin-bottom");
+                    yAdjust += child.getStyle("margin-top");
+                }
+                this.move(children, xAdjust, yAdjust);
+                if (round == 2) {
+                    children.forEach(function(child) {
+                        var m = child.getLayoutTransform();
+                        var cbox = child.getContentBox();
+                        var pin = m.transformPoint(new kity.Point(cbox.left, 0));
+                        layout.move([ child ], abs(pin.y - pout.y), 0);
+                    });
+                }
+            }
+        }));
+    }
+};
+
+//src/layout/mind.js
+_p[41] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var Layout = _p.r(19);
@@ -4192,8 +4287,79 @@ _p[39] = {
     }
 };
 
+//src/layout/tianpan.js
+/**
+ * @fileOverview
+ *
+ * 天盘模板
+ *
+ * @author: along
+ * @copyright: bpd729@163.com, 2015
+ */
+_p[42] = {
+    value: function(require, exports, module) {
+        var kity = _p.r(18);
+        var Layout = _p.r(19);
+        var Minder = _p.r(20);
+        Layout.register("tianpan", kity.createClass({
+            base: Layout,
+            doLayout: function(parent, children) {
+                if (children.length == 0) return;
+                var layout = this;
+                var pbox = parent.getContentBox();
+                var x, y, box;
+                var _theta = 5;
+                var _r = Math.max(pbox.width, 50);
+                children.forEach(function(child, index) {
+                    child.setLayoutTransform(new kity.Matrix());
+                    box = layout.getTreeBox(child);
+                    _r = Math.max(Math.max(box.width, box.height), _r);
+                });
+                _r = _r / 1.5 / Math.PI;
+                children.forEach(function(child, index) {
+                    x = _r * (Math.cos(_theta) + Math.sin(_theta) * _theta);
+                    y = _r * (Math.sin(_theta) - Math.cos(_theta) * _theta);
+                    _theta += .9 - index * .02;
+                    child.setLayoutVectorIn(new kity.Vector(1, 0));
+                    child.setVertexIn(new kity.Point(pbox.cx, pbox.cy));
+                    child.setLayoutTransform(new kity.Matrix());
+                    layout.move([ child ], x, y);
+                });
+            },
+            getOrderHint: function(node) {
+                var hint = [];
+                var box = node.getLayoutBox();
+                var offset = 5;
+                hint.push({
+                    type: "up",
+                    node: node,
+                    area: {
+                        x: box.x,
+                        y: box.top - node.getStyle("margin-top") - offset,
+                        width: box.width,
+                        height: node.getStyle("margin-top")
+                    },
+                    path: [ "M", box.x, box.top - offset, "L", box.right, box.top - offset ]
+                });
+                hint.push({
+                    type: "down",
+                    node: node,
+                    area: {
+                        x: box.x,
+                        y: box.bottom + offset,
+                        width: box.width,
+                        height: node.getStyle("margin-bottom")
+                    },
+                    path: [ "M", box.x, box.bottom + offset, "L", box.right, box.bottom + offset ]
+                });
+                return hint;
+            }
+        }));
+    }
+};
+
 //src/module/arrange.js
-_p[40] = {
+_p[43] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var MinderNode = _p.r(22);
@@ -4331,7 +4497,7 @@ _p[40] = {
 };
 
 //src/module/basestyle.js
-_p[41] = {
+_p[44] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -4339,7 +4505,7 @@ _p[41] = {
         var MinderNode = _p.r(22);
         var Command = _p.r(10);
         var Module = _p.r(21);
-        var TextRenderer = _p.r(58);
+        var TextRenderer = _p.r(62);
         Module.register("basestylemodule", function() {
             var km = this;
             function getNodeDataOrStyle(node, name) {
@@ -4446,7 +4612,7 @@ _p[41] = {
 };
 
 //src/module/clipboard.js
-_p[42] = {
+_p[45] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -4595,7 +4761,7 @@ _p[42] = {
 };
 
 //src/module/dragtree.js
-_p[43] = {
+_p[46] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -4936,7 +5102,7 @@ _p[43] = {
 };
 
 //src/module/expand.js
-_p[44] = {
+_p[47] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -5053,8 +5219,8 @@ _p[44] = {
                 constructor: function(node) {
                     this.callBase();
                     this.radius = 6;
-                    this.outline = new kity.Circle(this.radius).stroke("gray").fill("gray");
-                    this.sign = new kity.Path().stroke("white");
+                    this.outline = new kity.Circle(this.radius).stroke("gray").fill("white");
+                    this.sign = new kity.Path().stroke("gray");
                     this.addShapes([ this.outline, this.sign ]);
                     this.initEvent(node);
                     this.setId(utils.uuid("node_expander"));
@@ -5110,15 +5276,6 @@ _p[44] = {
                     expander.setState(visible && node.children.length ? node.getData(EXPAND_STATE_DATA) : "hide");
                     var vector = node.getLayoutVectorIn().normalize(expander.radius + node.getStyle("stroke-width"));
                     var position = node.getVertexIn().offset(vector.reverse());
-                    if (node.data.text == "网页" || node.data.text == "图片") {
-                        window.node = window.node || [];
-                        window.node[node.data.text] = node;
-                    }
-                    var offset = node.getContentBox().width + (node.getType() === "sub" ? 13 : 15);
-                    position.x = node.getLayoutVectorIn().x === 1 ? position.x + offset : position.x - offset;
-                    if (node.getType() === "sub") {
-                        position.y = position.y + node.getContentBox().height / 2 + 3;
-                    }
                     this.expander.setTranslate(position);
                 }
             });
@@ -5211,7 +5368,7 @@ _p[44] = {
 };
 
 //src/module/font.js
-_p[45] = {
+_p[48] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -5219,7 +5376,7 @@ _p[45] = {
         var MinderNode = _p.r(22);
         var Command = _p.r(10);
         var Module = _p.r(21);
-        var TextRenderer = _p.r(58);
+        var TextRenderer = _p.r(62);
         function getNodeDataOrStyle(node, name) {
             return node.getData(name) || node.getStyle(name);
         }
@@ -5358,7 +5515,7 @@ _p[45] = {
 };
 
 //src/module/hyperlink.js
-_p[46] = {
+_p[49] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -5474,8 +5631,113 @@ _p[46] = {
     }
 };
 
+//src/module/image-viewer.js
+_p[50] = {
+    value: function(require, exports, module) {
+        var kity = _p.r(18);
+        var keymap = _p.r(16);
+        var Module = _p.r(21);
+        var Command = _p.r(10);
+        Module.register("ImageViewer", function() {
+            function createEl(name, classNames, children) {
+                var el = document.createElement(name);
+                addClass(el, classNames);
+                children && children.length && children.forEach(function(child) {
+                    el.appendChild(child);
+                });
+                return el;
+            }
+            function on(el, event, handler) {
+                el.addEventListener(event, handler);
+            }
+            function addClass(el, classNames) {
+                classNames && classNames.split(" ").forEach(function(className) {
+                    el.classList.add(className);
+                });
+            }
+            function removeClass(el, classNames) {
+                classNames && classNames.split(" ").forEach(function(className) {
+                    el.classList.remove(className);
+                });
+            }
+            var ImageViewer = kity.createClass("ImageViewer", {
+                constructor: function() {
+                    var btnClose = createEl("button", "km-image-viewer-btn km-image-viewer-close");
+                    var btnSource = createEl("button", "km-image-viewer-btn km-image-viewer-source");
+                    var image = this.image = createEl("img");
+                    var toolbar = this.toolbar = createEl("div", "km-image-viewer-toolbar", [ btnSource, btnClose ]);
+                    var container = createEl("div", "km-image-viewer-container", [ image ]);
+                    var viewer = this.viewer = createEl("div", "km-image-viewer", [ toolbar, container ]);
+                    this.hotkeyHandler = this.hotkeyHandler.bind(this);
+                    on(btnClose, "click", this.close.bind(this));
+                    on(btnSource, "click", this.viewSource.bind(this));
+                    on(image, "click", this.zoomImage.bind(this));
+                    on(viewer, "contextmenu", this.toggleToolbar.bind(this));
+                    on(document, "keydown", this.hotkeyHandler);
+                },
+                dispose: function() {
+                    this.close();
+                    document.removeEventListener("remove", this.hotkeyHandler);
+                },
+                hotkeyHandler: function(e) {
+                    if (!this.actived) {
+                        return;
+                    }
+                    if (e.keyCode === keymap["esc"]) {
+                        this.close();
+                    }
+                },
+                toggleToolbar: function(e) {
+                    e && e.preventDefault();
+                    this.toolbar.classList.toggle("hidden");
+                },
+                zoomImage: function(restore) {
+                    var image = this.image;
+                    if (typeof restore === "boolean") {
+                        restore && addClass(image, "limited");
+                    } else {
+                        image.classList.toggle("limited");
+                    }
+                },
+                viewSource: function(src) {
+                    window.open(this.image.src);
+                },
+                open: function(src) {
+                    var input = document.querySelector("input");
+                    if (input) {
+                        input.focus();
+                        input.blur();
+                    }
+                    this.image.src = src;
+                    this.zoomImage(true);
+                    document.body.appendChild(this.viewer);
+                    this.actived = true;
+                },
+                close: function() {
+                    this.image.src = "";
+                    document.body.removeChild(this.viewer);
+                    this.actived = false;
+                }
+            });
+            return {
+                init: function() {
+                    this.viewer = new ImageViewer();
+                },
+                events: {
+                    "normal.dblclick": function(e) {
+                        var shape = e.kityEvent.targetShape;
+                        if (shape.__KityClassName === "Image" && shape.url) {
+                            this.viewer.open(shape.url);
+                        }
+                    }
+                }
+            };
+        });
+    }
+};
+
 //src/module/image.js
-_p[47] = {
+_p[51] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -5597,7 +5859,7 @@ _p[47] = {
 };
 
 //src/module/keynav.js
-_p[48] = {
+_p[52] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -5752,7 +6014,7 @@ _p[48] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[49] = {
+_p[53] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var Command = _p.r(10);
@@ -5827,7 +6089,7 @@ _p[49] = {
 };
 
 //src/module/node.js
-_p[50] = {
+_p[54] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -5977,7 +6239,7 @@ _p[50] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[51] = {
+_p[55] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -6086,7 +6348,7 @@ _p[51] = {
 };
 
 //src/module/outline.js
-_p[52] = {
+_p[56] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -6203,7 +6465,7 @@ _p[52] = {
 };
 
 //src/module/priority.js
-_p[53] = {
+_p[57] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -6329,7 +6591,7 @@ _p[53] = {
 };
 
 //src/module/progress.js
-_p[54] = {
+_p[58] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -6457,7 +6719,7 @@ _p[54] = {
 };
 
 //src/module/resource.js
-_p[55] = {
+_p[59] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -6787,7 +7049,7 @@ _p[55] = {
 };
 
 //src/module/select.js
-_p[56] = {
+_p[60] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -6932,7 +7194,7 @@ _p[56] = {
 };
 
 //src/module/style.js
-_p[57] = {
+_p[61] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -7037,7 +7299,7 @@ _p[57] = {
 };
 
 //src/module/text.js
-_p[58] = {
+_p[62] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -7291,7 +7553,7 @@ _p[58] = {
 };
 
 //src/module/view.js
-_p[59] = {
+_p[63] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -7613,7 +7875,7 @@ _p[59] = {
 };
 
 //src/module/zoom.js
-_p[60] = {
+_p[64] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var utils = _p.r(34);
@@ -7764,9 +8026,6 @@ _p[60] = {
                         if (!e.originEvent.ctrlKey && !e.originEvent.metaKey) return;
                         var delta = e.originEvent.wheelDelta;
                         var me = this;
-                        if (!kity.Browser.mac) {
-                            delta = -delta;
-                        }
                         // 稀释
                         if (Math.abs(delta) > 100) {
                             clearTimeout(this._wheelZoomTimeout);
@@ -7776,10 +8035,10 @@ _p[60] = {
                         this._wheelZoomTimeout = setTimeout(function() {
                             var value;
                             var lastValue = me.getPaper()._zoom || 1;
-                            if (delta < 0) {
-                                me.execCommand("zoom-in");
-                            } else if (delta > 0) {
-                                me.execCommand("zoom-out");
+                            if (delta > 0) {
+                                me.execCommand("zoomin");
+                            } else if (delta < 0) {
+                                me.execCommand("zoomout");
                             }
                         }, 100);
                         e.originEvent.preventDefault();
@@ -7795,7 +8054,7 @@ _p[60] = {
 };
 
 //src/protocol/json.js
-_p[61] = {
+_p[65] = {
     value: function(require, exports, module) {
         var data = _p.r(13);
         data.registerProtocol("json", module.exports = {
@@ -7814,7 +8073,7 @@ _p[61] = {
 };
 
 //src/protocol/markdown.js
-_p[62] = {
+_p[66] = {
     value: function(require, exports, module) {
         var data = _p.r(13);
         var LINE_ENDING_SPLITER = /\r\n|\r|\n/;
@@ -7945,7 +8204,7 @@ _p[62] = {
 };
 
 //src/protocol/png.js
-_p[63] = {
+_p[67] = {
     value: function(require, exports, module) {
         var kity = _p.r(18);
         var data = _p.r(13);
@@ -8023,8 +8282,8 @@ _p[63] = {
             svgXml = svgContainer.innerHTML;
             // Dummy IE
             svgXml = svgXml.replace(' xmlns="http://www.w3.org/2000/svg" ' + 'xmlns:NS1="" NS1:ns1:xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:NS2="" NS2:xmlns:ns1=""', "");
-            // svg 含有 &nbsp; 符号导出报错 Entity 'nbsp' not defined
-            svgXml = svgXml.replace(/&nbsp;/g, "&#xa0;");
+            // svg 含有 &nbsp; 符号导出报错 Entity 'nbsp' not defined ,含有控制字符触发Load Image 会触发报错
+            svgXml = svgXml.replace(/&nbsp;|[\x00-\x1F\x7F-\x9F]/g, "");
             // fix title issue in safari
             // @ http://stackoverflow.com/questions/30273775/namespace-prefix-ns1-for-href-on-tagelement-is-not-defined-setattributens
             svgXml = svgXml.replace(/NS\d+:title/gi, "xlink:title");
@@ -8165,7 +8424,7 @@ _p[63] = {
 };
 
 //src/protocol/svg.js
-_p[64] = {
+_p[68] = {
     value: function(require, exports, module) {
         var data = _p.r(13);
         /**
@@ -8437,7 +8696,7 @@ _p[64] = {
 };
 
 //src/protocol/text.js
-_p[65] = {
+_p[69] = {
     value: function(require, exports, module) {
         var data = _p.r(13);
         var Browser = _p.r(18).Browser;
@@ -8668,7 +8927,7 @@ _p[65] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[66] = {
+_p[70] = {
     value: function(require, exports, module) {
         var template = _p.r(32);
         template.register("default", {
@@ -8693,6 +8952,76 @@ _p[66] = {
     }
 };
 
+//src/template/filetree.js
+/**
+ * @fileOverview
+ *
+ * 文件夹模板
+ *
+ * @author: techird
+ * @copyright: Baidu FEX, 2014
+ */
+_p[71] = {
+    value: function(require, exports, module) {
+        var template = _p.r(32);
+        template.register("filetree", {
+            getLayout: function(node) {
+                if (node.getData("layout")) return node.getData("layout");
+                if (node.isRoot()) return "bottom";
+                return "filetree-down";
+            },
+            getConnect: function(node) {
+                if (node.getLevel() == 1) {
+                    return "poly";
+                }
+                return "l";
+            }
+        });
+    }
+};
+
+//src/template/fish-bone.js
+/**
+ * @fileOverview
+ *
+ * 默认模板 - 鱼骨头模板
+ *
+ * @author: techird
+ * @copyright: Baidu FEX, 2014
+ */
+_p[72] = {
+    value: function(require, exports, module) {
+        var template = _p.r(32);
+        template.register("fish-bone", {
+            getLayout: function(node) {
+                if (node.getData("layout")) return node.getData("layout");
+                var level = node.getLevel();
+                // 根节点
+                if (level === 0) {
+                    return "fish-bone-master";
+                }
+                // 一级节点
+                if (level === 1) {
+                    return "fish-bone-slave";
+                }
+                return node.getLayoutPointPreview().y > 0 ? "filetree-up" : "filetree-down";
+            },
+            getConnect: function(node) {
+                switch (node.getLevel()) {
+                  case 1:
+                    return "fish-bone-master";
+
+                  case 2:
+                    return "line";
+
+                  default:
+                    return "l";
+                }
+            }
+        });
+    }
+};
+
 //src/template/right.js
 /**
  * @fileOverview
@@ -8702,7 +9031,7 @@ _p[66] = {
  * @author: techird
  * @copyright: Baidu FEX, 2014
  */
-_p[67] = {
+_p[73] = {
     value: function(require, exports, module) {
         var template = _p.r(32);
         template.register("right", {
@@ -8717,8 +9046,239 @@ _p[67] = {
     }
 };
 
+//src/template/structure.js
+/**
+ * @fileOverview
+ *
+ * 组织结构图模板
+ *
+ * @author: techird
+ * @copyright: Baidu FEX, 2014
+ */
+_p[74] = {
+    value: function(require, exports, module) {
+        var template = _p.r(32);
+        template.register("structure", {
+            getLayout: function(node) {
+                return node.getData("layout") || "bottom";
+            },
+            getConnect: function(node) {
+                return "poly";
+            }
+        });
+    }
+};
+
+//src/template/tianpan.js
+/**
+ * @fileOverview
+ *
+ * 天盘模板
+ *
+ * @author: along
+ * @copyright: bpd729@163.com, 2015
+ */
+_p[75] = {
+    value: function(require, exports, module) {
+        var template = _p.r(32);
+        template.register("tianpan", {
+            getLayout: function(node) {
+                if (node.getData("layout")) return node.getData("layout");
+                var level = node.getLevel();
+                // 根节点
+                if (level === 0) {
+                    return "tianpan";
+                }
+                return node.parent.getLayout();
+            },
+            getConnect: function(node) {
+                return "arc_tp";
+            }
+        });
+    }
+};
+
+//src/theme/default.js
+_p[76] = {
+    value: function(require, exports, module) {
+        var theme = _p.r(33);
+        [ "classic", "classic-compact" ].forEach(function(name) {
+            var compact = name == "classic-compact";
+            /* jscs:disable maximumLineLength */
+            theme.register(name, {
+                background: '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
+                "root-color": "#430",
+                "root-background": "#e9df98",
+                "root-stroke": "#e9df98",
+                "root-font-size": 24,
+                "root-padding": compact ? [ 10, 25 ] : [ 15, 25 ],
+                "root-margin": compact ? [ 15, 25 ] : [ 30, 100 ],
+                "root-radius": 30,
+                "root-space": 10,
+                "root-shadow": "rgba(0, 0, 0, .25)",
+                "main-color": "#333",
+                "main-background": "#a4c5c0",
+                "main-stroke": "#a4c5c0",
+                "main-font-size": 16,
+                "main-padding": compact ? [ 5, 15 ] : [ 6, 20 ],
+                "main-margin": compact ? [ 5, 10 ] : 20,
+                "main-radius": 10,
+                "main-space": 5,
+                "main-shadow": "rgba(0, 0, 0, .25)",
+                "sub-color": "white",
+                "sub-background": "transparent",
+                "sub-stroke": "none",
+                "sub-font-size": 12,
+                "sub-padding": [ 5, 10 ],
+                "sub-margin": compact ? [ 5, 10 ] : [ 15, 20 ],
+                "sub-tree-margin": 30,
+                "sub-radius": 5,
+                "sub-space": 5,
+                "connect-color": "white",
+                "connect-width": 2,
+                "main-connect-width": 3,
+                "connect-radius": 5,
+                "selected-background": "rgb(254, 219, 0)",
+                "selected-stroke": "rgb(254, 219, 0)",
+                "selected-color": "black",
+                "marquee-background": "rgba(255,255,255,.3)",
+                "marquee-stroke": "white",
+                "drop-hint-color": "yellow",
+                "sub-drop-hint-width": 2,
+                "main-drop-hint-width": 4,
+                "root-drop-hint-width": 4,
+                "order-hint-area-color": "rgba(0, 255, 0, .5)",
+                "order-hint-path-color": "#0f0",
+                "order-hint-path-width": 1,
+                "text-selection-color": "rgb(27,171,255)",
+                "line-height": 1.5
+            });
+        });
+    }
+};
+
+//src/theme/fish.js
+_p[77] = {
+    value: function(require, exports, module) {
+        var theme = _p.r(33);
+        theme.register("fish", {
+            background: '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
+            "root-color": "#430",
+            "root-background": "#e9df98",
+            "root-stroke": "#e9df98",
+            "root-font-size": 24,
+            "root-padding": [ 35, 35 ],
+            "root-margin": 30,
+            "root-radius": 100,
+            "root-space": 10,
+            "root-shadow": "rgba(0, 0, 0, .25)",
+            "main-color": "#333",
+            "main-background": "#a4c5c0",
+            "main-stroke": "#a4c5c0",
+            "main-font-size": 16,
+            "main-padding": [ 6, 20 ],
+            "main-margin": [ 20, 20 ],
+            "main-radius": 5,
+            "main-space": 5,
+            "main-shadow": "rgba(0, 0, 0, .25)",
+            "sub-color": "black",
+            "sub-background": "white",
+            "sub-stroke": "white",
+            "sub-font-size": 12,
+            "sub-padding": [ 5, 10 ],
+            "sub-margin": [ 10 ],
+            "sub-radius": 5,
+            "sub-space": 5,
+            "connect-color": "white",
+            "connect-width": 3,
+            "main-connect-width": 3,
+            "connect-radius": 5,
+            "selected-background": "rgb(254, 219, 0)",
+            "selected-stroke": "rgb(254, 219, 0)",
+            "marquee-background": "rgba(255,255,255,.3)",
+            "marquee-stroke": "white",
+            "drop-hint-color": "yellow",
+            "drop-hint-width": 4,
+            "order-hint-area-color": "rgba(0, 255, 0, .5)",
+            "order-hint-path-color": "#0f0",
+            "order-hint-path-width": 1,
+            "text-selection-color": "rgb(27,171,255)",
+            "line-height": 1.5
+        });
+    }
+};
+
+//src/theme/fresh.js
+_p[78] = {
+    value: function(require, exports, module) {
+        var kity = _p.r(18);
+        var theme = _p.r(33);
+        function hsl(h, s, l) {
+            return kity.Color.createHSL(h, s, l);
+        }
+        function generate(h, compat) {
+            return {
+                background: "#fbfbfb",
+                "root-color": "white",
+                "root-background": hsl(h, 37, 60),
+                "root-stroke": hsl(h, 37, 60),
+                "root-font-size": 16,
+                "root-padding": compat ? [ 6, 12 ] : [ 12, 24 ],
+                "root-margin": compat ? 10 : [ 30, 100 ],
+                "root-radius": 5,
+                "root-space": 10,
+                "main-color": "black",
+                "main-background": hsl(h, 33, 95),
+                "main-stroke": hsl(h, 37, 60),
+                "main-stroke-width": 1,
+                "main-font-size": 14,
+                "main-padding": [ 6, 20 ],
+                "main-margin": compat ? 8 : 20,
+                "main-radius": 3,
+                "main-space": 5,
+                "sub-color": "black",
+                "sub-background": "transparent",
+                "sub-stroke": "none",
+                "sub-font-size": 12,
+                "sub-padding": compat ? [ 3, 5 ] : [ 5, 10 ],
+                "sub-margin": compat ? [ 4, 8 ] : [ 15, 20 ],
+                "sub-radius": 5,
+                "sub-space": 5,
+                "connect-color": hsl(h, 37, 60),
+                "connect-width": 1,
+                "connect-radius": 5,
+                "selected-stroke": hsl(h, 26, 30),
+                "selected-stroke-width": "3",
+                "blur-selected-stroke": hsl(h, 10, 60),
+                "marquee-background": hsl(h, 100, 80).set("a", .1),
+                "marquee-stroke": hsl(h, 37, 60),
+                "drop-hint-color": hsl(h, 26, 35),
+                "drop-hint-width": 5,
+                "order-hint-area-color": hsl(h, 100, 30).set("a", .5),
+                "order-hint-path-color": hsl(h, 100, 25),
+                "order-hint-path-width": 1,
+                "text-selection-color": hsl(h, 100, 20),
+                "line-height": 1.5
+            };
+        }
+        var plans = {
+            red: 0,
+            soil: 25,
+            green: 122,
+            blue: 204,
+            purple: 246,
+            pink: 334
+        };
+        var name;
+        for (name in plans) {
+            theme.register("fresh-" + name, generate(plans[name]));
+            theme.register("fresh-" + name + "-compat", generate(plans[name], true));
+        }
+    }
+};
+
 //src/theme/snow.js
-_p[68] = {
+_p[79] = {
     value: function(require, exports, module) {
         var theme = _p.r(33);
         [ "snow", "snow-compact" ].forEach(function(name) {
@@ -8774,6 +9334,98 @@ _p[68] = {
                 "text-selection-color": "rgb(27,171,255)",
                 "line-height": 1.5
             });
+        });
+    }
+};
+
+//src/theme/tianpan.js
+_p[80] = {
+    value: function(require, exports, module) {
+        var theme = _p.r(33);
+        [ "tianpan", "tianpan-compact" ].forEach(function(name) {
+            var compact = name == "tianpan-compact";
+            theme.register(name, {
+                background: '#3A4144 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAIAAAACDbGyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQzg5QTQ0NDhENzgxMUUzOENGREE4QTg0RDgzRTZDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQzg5QTQ0NThENzgxMUUzOENGREE4QTg0RDgzRTZDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkMwOEQ1NDRGOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkMwOEQ1NDUwOEQ3NzExRTM4Q0ZEQThBODREODNFNkM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+e9P33AAAACVJREFUeNpisXJ0YUACTAyoAMr/+eM7EGGRZ4FQ7BycEAZAgAEAHbEGtkoQm/wAAAAASUVORK5CYII=") repeat',
+                "root-color": "#430",
+                "root-background": "#e9df98",
+                "root-stroke": "#e9df98",
+                "root-font-size": 25,
+                "root-padding": compact ? 15 : 20,
+                "root-margin": compact ? [ 15, 25 ] : 100,
+                "root-radius": 30,
+                "root-space": 10,
+                "root-shadow": "rgba(0, 0, 0, .25)",
+                "root-shape": "circle",
+                "main-color": "#333",
+                "main-background": "#a4c5c0",
+                "main-stroke": "#a4c5c0",
+                "main-font-size": 15,
+                "main-padding": compact ? 10 : 12,
+                "main-margin": compact ? 10 : 12,
+                "main-radius": 10,
+                "main-space": 5,
+                "main-shadow": "rgba(0, 0, 0, .25)",
+                "main-shape": "circle",
+                "sub-color": "#333",
+                "sub-background": "#99ca6a",
+                "sub-stroke": "#a4c5c0",
+                "sub-font-size": 13,
+                "sub-padding": 5,
+                "sub-margin": compact ? 6 : 10,
+                "sub-tree-margin": 30,
+                "sub-radius": 5,
+                "sub-space": 5,
+                "sub-shadow": "rgba(0, 0, 0, .25)",
+                "sub-shape": "circle",
+                "connect-color": "white",
+                "connect-width": 2,
+                "main-connect-width": 3,
+                "connect-radius": 5,
+                "selected-background": "rgb(254, 219, 0)",
+                "selected-stroke": "rgb(254, 219, 0)",
+                "selected-color": "black",
+                "marquee-background": "rgba(255,255,255,.3)",
+                "marquee-stroke": "white",
+                "drop-hint-color": "yellow",
+                "sub-drop-hint-width": 2,
+                "main-drop-hint-width": 4,
+                "root-drop-hint-width": 4,
+                "order-hint-area-color": "rgba(0, 255, 0, .5)",
+                "order-hint-path-color": "#0f0",
+                "order-hint-path-width": 1,
+                "text-selection-color": "rgb(27,171,255)",
+                "line-height": 1.4
+            });
+        });
+    }
+};
+
+//src/theme/wire.js
+_p[81] = {
+    value: function(require, exports, module) {
+        var theme = _p.r(33);
+        theme.register("wire", {
+            background: "black",
+            color: "#999",
+            stroke: "none",
+            padding: 10,
+            margin: 20,
+            "font-size": 14,
+            "connect-color": "#999",
+            "connect-width": 1,
+            "selected-background": "#999",
+            "selected-color": "black",
+            "marquee-background": "rgba(255,255,255,.3)",
+            "marquee-stroke": "white",
+            "drop-hint-color": "yellow",
+            "sub-drop-hint-width": 2,
+            "main-drop-hint-width": 4,
+            "root-drop-hint-width": 4,
+            "order-hint-area-color": "rgba(0, 255, 0, .5)",
+            "order-hint-path-color": "#0f0",
+            "order-hint-path-width": 1,
+            "text-selection-color": "rgb(27,171,255)",
+            "line-height": 1.5
         });
     }
 };

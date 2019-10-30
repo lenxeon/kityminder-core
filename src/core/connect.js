@@ -108,6 +108,26 @@ define(function(require, exports, module) {
         init: function() {
             this._connectContainer = new kity.Group().setId(utils.uuid('minder_connect_group'));
             this.getRenderContainer().prependShape(this._connectContainer);
+
+            //基准线
+            var rect = new kity.Group().setId(utils.uuid('lines'));
+            // rect.shapeNode.setAttribute('transform', 'translate(0.5, 0.5)');
+            // rect.style('stroke:#efefef;stroke-width:1;')
+            // 添加单个图形
+            console.log("添加基准线");
+            var step = 20
+            for (var i = -300; i < 300; i++) {
+                var rowLine = new kity.Line(i * step, -3000, i * step, 3000);
+                rowLine.fill('white')
+                rowLine.stroke('#eeeeee');
+                rect.appendShape(rowLine);
+                var colLine = new kity.Line(-3000, i * step, 3000, i * step);
+                colLine.fill('white')
+                colLine.stroke('#eeeeee');
+                rect.appendShape(colLine);
+            }
+            this.getRenderContainer().prependShape(rect);
+            //基准线
         },
         events: {
             'nodeattach': function(e) {
